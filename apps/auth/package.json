@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@auth-plattform/ui": "workspace:*",
+    "@better-auth/drizzle-adapter": "^1.6.8",
     "@hugeicons/core-free-icons": "^4.1.1",
     "@hugeicons/react": "^1.1.6",
     "@neondatabase/serverless": "^1.1.0",
