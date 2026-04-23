@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:push": "npx drizzle-kit generate & npx drizzle-kit migrate",
+    "db:browser": "npx drizzle-kit studio"
   },
   "dependencies": {
     "@auth-plattform/ui": "workspace:*",
