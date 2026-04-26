@@ -1,14 +1,8 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
-import { getSession } from "@/lib/auth/server/session"
+import { Outlet, createFileRoute } from "@tanstack/react-router"
+import { requireSession } from "@/lib/auth/server/guard"
 
 export const Route = createFileRoute("/(app)/_authenticated")({
-  beforeLoad: async () => {
-    const session = await getSession()
-
-    if (!session) {
-      throw redirect({ to: "/login" })
-    }
-  },
+  beforeLoad: async () => requireSession(),
   component: PathlessLayoutComponent,
 })
 
