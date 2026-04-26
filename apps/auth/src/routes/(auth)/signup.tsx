@@ -11,7 +11,7 @@ import { Input } from "@auth-plattform/ui/components/input"
 import { Button, buttonVariants } from "@auth-plattform/ui/components/button"
 import { cn } from "@auth-plattform/ui/lib/utils"
 
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth/client/auth-client"
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: RouteComponent,
