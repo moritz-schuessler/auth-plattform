@@ -10,10 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as authSignupRouteImport } from './routes/(auth)/signup'
-import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authAnonymousRouteImport } from './routes/(auth)/_anonymous'
 import { Route as appAuthenticatedRouteImport } from './routes/(app)/_authenticated'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authAnonymousSignupRouteImport } from './routes/(auth)/_anonymous/signup'
+import { Route as authAnonymousLoginRouteImport } from './routes/(auth)/_anonymous/login'
 import { Route as appAuthenticatedDashboardRouteImport } from './routes/(app)/_authenticated/dashboard'
 
 const IndexRoute = IndexRouteImport.update({
@@ -21,14 +22,8 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authSignupRoute = authSignupRouteImport.update({
-  id: '/(auth)/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authLoginRoute = authLoginRouteImport.update({
-  id: '/(auth)/login',
-  path: '/login',
+const authAnonymousRoute = authAnonymousRouteImport.update({
+  id: '/(auth)/_anonymous',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appAuthenticatedRoute = appAuthenticatedRouteImport.update({
@@ -40,6 +35,16 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authAnonymousSignupRoute = authAnonymousSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => authAnonymousRoute,
+} as any)
+const authAnonymousLoginRoute = authAnonymousLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => authAnonymousRoute,
+} as any)
 const appAuthenticatedDashboardRoute =
   appAuthenticatedDashboardRouteImport.update({
     id: '/dashboard',
@@ -49,47 +54,48 @@ const appAuthenticatedDashboardRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/login': typeof authLoginRoute
-  '/signup': typeof authSignupRoute
   '/dashboard': typeof appAuthenticatedDashboardRoute
+  '/login': typeof authAnonymousLoginRoute
+  '/signup': typeof authAnonymousSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof authLoginRoute
-  '/signup': typeof authSignupRoute
   '/dashboard': typeof appAuthenticatedDashboardRoute
+  '/login': typeof authAnonymousLoginRoute
+  '/signup': typeof authAnonymousSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(app)/_authenticated': typeof appAuthenticatedRouteWithChildren
-  '/(auth)/login': typeof authLoginRoute
-  '/(auth)/signup': typeof authSignupRoute
+  '/(auth)/_anonymous': typeof authAnonymousRouteWithChildren
   '/(app)/_authenticated/dashboard': typeof appAuthenticatedDashboardRoute
+  '/(auth)/_anonymous/login': typeof authAnonymousLoginRoute
+  '/(auth)/_anonymous/signup': typeof authAnonymousSignupRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/dashboard' | '/api/auth/$'
+  fullPaths: '/' | '/dashboard' | '/login' | '/signup' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/dashboard' | '/api/auth/$'
+  to: '/' | '/dashboard' | '/login' | '/signup' | '/api/auth/$'
   id:
     | '__root__'
     | '/'
     | '/(app)/_authenticated'
-    | '/(auth)/login'
-    | '/(auth)/signup'
+    | '/(auth)/_anonymous'
     | '/(app)/_authenticated/dashboard'
+    | '/(auth)/_anonymous/login'
+    | '/(auth)/_anonymous/signup'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   appAuthenticatedRoute: typeof appAuthenticatedRouteWithChildren
-  authLoginRoute: typeof authLoginRoute
-  authSignupRoute: typeof authSignupRoute
+  authAnonymousRoute: typeof authAnonymousRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -102,18 +108,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/signup': {
-      id: '/(auth)/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof authSignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/login': {
-      id: '/(auth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginRouteImport
+    '/(auth)/_anonymous': {
+      id: '/(auth)/_anonymous'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authAnonymousRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/_authenticated': {
@@ -129,6 +128,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/_anonymous/signup': {
+      id: '/(auth)/_anonymous/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof authAnonymousSignupRouteImport
+      parentRoute: typeof authAnonymousRoute
+    }
+    '/(auth)/_anonymous/login': {
+      id: '/(auth)/_anonymous/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authAnonymousLoginRouteImport
+      parentRoute: typeof authAnonymousRoute
     }
     '/(app)/_authenticated/dashboard': {
       id: '/(app)/_authenticated/dashboard'
@@ -151,11 +164,24 @@ const appAuthenticatedRouteChildren: appAuthenticatedRouteChildren = {
 const appAuthenticatedRouteWithChildren =
   appAuthenticatedRoute._addFileChildren(appAuthenticatedRouteChildren)
 
+interface authAnonymousRouteChildren {
+  authAnonymousLoginRoute: typeof authAnonymousLoginRoute
+  authAnonymousSignupRoute: typeof authAnonymousSignupRoute
+}
+
+const authAnonymousRouteChildren: authAnonymousRouteChildren = {
+  authAnonymousLoginRoute: authAnonymousLoginRoute,
+  authAnonymousSignupRoute: authAnonymousSignupRoute,
+}
+
+const authAnonymousRouteWithChildren = authAnonymousRoute._addFileChildren(
+  authAnonymousRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   appAuthenticatedRoute: appAuthenticatedRouteWithChildren,
-  authLoginRoute: authLoginRoute,
-  authSignupRoute: authSignupRoute,
+  authAnonymousRoute: authAnonymousRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

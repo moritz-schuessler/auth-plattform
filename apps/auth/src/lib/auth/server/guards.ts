@@ -11,4 +11,16 @@ const requireSession = async () => {
   return session
 }
 
-export { requireSession }
+const requireAnonymous = async () => {
+  const session = await getSession()
+
+  if (session) {
+    throw redirect({
+      to: "/dashboard",
+    })
+  }
+
+  return null
+}
+
+export { requireSession, requireAnonymous }
