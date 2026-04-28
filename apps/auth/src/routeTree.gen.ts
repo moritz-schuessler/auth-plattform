@@ -9,7 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as publicRouteRouteImport } from './routes/(public)/route'
+import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as authAnonymousRouteImport } from './routes/(auth)/_anonymous'
 import { Route as appAuthenticatedRouteImport } from './routes/(app)/_authenticated'
 import { Route as authAnonymousSignupRouteImport } from './routes/(auth)/_anonymous/signup'
@@ -17,10 +18,14 @@ import { Route as authAnonymousLoginRouteImport } from './routes/(auth)/_anonymo
 import { Route as appAuthenticatedDashboardRouteImport } from './routes/(app)/_authenticated/dashboard'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 
-const IndexRoute = IndexRouteImport.update({
+const publicRouteRoute = publicRouteRouteImport.update({
+  id: '/(public)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => publicRouteRoute,
 } as any)
 const authAnonymousRoute = authAnonymousRouteImport.update({
   id: '/(auth)/_anonymous',
@@ -53,14 +58,14 @@ const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof publicIndexRoute
   '/dashboard': typeof appAuthenticatedDashboardRoute
   '/login': typeof authAnonymousLoginRoute
   '/signup': typeof authAnonymousSignupRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof publicIndexRoute
   '/dashboard': typeof appAuthenticatedDashboardRoute
   '/login': typeof authAnonymousLoginRoute
   '/signup': typeof authAnonymousSignupRoute
@@ -68,9 +73,10 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/(public)': typeof publicRouteRouteWithChildren
   '/(app)/_authenticated': typeof appAuthenticatedRouteWithChildren
   '/(auth)/_anonymous': typeof authAnonymousRouteWithChildren
+  '/(public)/': typeof publicIndexRoute
   '/(app)/_authenticated/dashboard': typeof appAuthenticatedDashboardRoute
   '/(auth)/_anonymous/login': typeof authAnonymousLoginRoute
   '/(auth)/_anonymous/signup': typeof authAnonymousSignupRoute
@@ -83,9 +89,10 @@ export interface FileRouteTypes {
   to: '/' | '/dashboard' | '/login' | '/signup' | '/api/auth/$'
   id:
     | '__root__'
-    | '/'
+    | '/(public)'
     | '/(app)/_authenticated'
     | '/(auth)/_anonymous'
+    | '/(public)/'
     | '/(app)/_authenticated/dashboard'
     | '/(auth)/_anonymous/login'
     | '/(auth)/_anonymous/signup'
@@ -93,7 +100,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  publicRouteRoute: typeof publicRouteRouteWithChildren
   appAuthenticatedRoute: typeof appAuthenticatedRouteWithChildren
   authAnonymousRoute: typeof authAnonymousRouteWithChildren
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
@@ -101,12 +108,19 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(public)': {
+      id: '/(public)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof publicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(public)/': {
+      id: '/(public)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof publicIndexRouteImport
+      parentRoute: typeof publicRouteRoute
     }
     '/(auth)/_anonymous': {
       id: '/(auth)/_anonymous'
@@ -153,6 +167,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface publicRouteRouteChildren {
+  publicIndexRoute: typeof publicIndexRoute
+}
+
+const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicIndexRoute: publicIndexRoute,
+}
+
+const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
+  publicRouteRouteChildren,
+)
+
 interface appAuthenticatedRouteChildren {
   appAuthenticatedDashboardRoute: typeof appAuthenticatedDashboardRoute
 }
@@ -179,7 +205,7 @@ const authAnonymousRouteWithChildren = authAnonymousRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  publicRouteRoute: publicRouteRouteWithChildren,
   appAuthenticatedRoute: appAuthenticatedRouteWithChildren,
   authAnonymousRoute: authAnonymousRouteWithChildren,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
