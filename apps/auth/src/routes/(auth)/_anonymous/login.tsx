@@ -49,47 +49,44 @@ function RouteComponent() {
   )
 
   return (
-    <div className="flex h-full">
-      <main className="flex w-full flex-col items-center justify-center">
-        <div className="flex w-full max-w-[60ch] flex-col gap-6">
-          <h1 className="text-2xl">Login to your Account</h1>
-          <form
-            className="flex h-full flex-col items-center justify-center gap-6"
-            onSubmit={handleSubmit}
-          >
-            <div className="flex w-full flex-col gap-4">
-              <Field>
-                <FieldGroup className="flex flex-col gap-1">
-                  <FieldLabel>Email</FieldLabel>
-                  <Input name="email" type="email" required />
-                </FieldGroup>
-              </Field>
-              <Field>
-                <FieldGroup className="flex flex-col gap-1">
-                  <FieldLabel>Password</FieldLabel>
-                  <Input name="password" type="password" required />
-                </FieldGroup>
-              </Field>
-            </div>
-            <Button type="submit" variant="default" className="flex w-full">
-              Login
-            </Button>
-          </form>
-          <div className="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-            Don't have an account?
-            <a
-              href="/signup"
-              className={cn(
-                buttonVariants({ variant: "link", size: "sm" }),
-                "p-0"
-              )}
-            >
-              Sign Up
-            </a>
+    <main className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex w-full max-w-[60ch] flex-col gap-6">
+        <h1 className="text-2xl">Login to your Account</h1>
+        <form
+          className="flex h-full flex-col items-center justify-center gap-6"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex w-full flex-col gap-4">
+            <Field>
+              <FieldGroup className="flex flex-col gap-1">
+                <FieldLabel>Email</FieldLabel>
+                <Input name="email" type="email" required />
+              </FieldGroup>
+            </Field>
+            <Field>
+              <FieldGroup className="flex flex-col gap-1">
+                <FieldLabel>Password</FieldLabel>
+                <Input name="password" type="password" required />
+              </FieldGroup>
+            </Field>
           </div>
+          <Button type="submit" variant="default" className="flex w-full">
+            Login
+          </Button>
+        </form>
+        <div className="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
+          Don't have an account?
+          <a
+            href="/signup"
+            className={cn(
+              buttonVariants({ variant: "link", size: "sm" }),
+              "p-0"
+            )}
+          >
+            Sign Up
+          </a>
         </div>
-      </main>
-      <div className="w-full bg-sidebar" />
-    </div>
+      </div>
+    </main>
   )
 }
