@@ -39,7 +39,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="h-dvh">
+      <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
           {children}
         </ThemeProvider>

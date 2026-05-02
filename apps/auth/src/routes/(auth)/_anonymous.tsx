@@ -12,7 +12,7 @@ export const Route = createFileRoute("/(auth)/_anonymous")({
 
 function PathlessLayoutComponent() {
   return (
-    <div className="flex h-full">
+    <div className="flex h-dvh">
       <div className="flex size-full flex-col">
         <AuthNavigation />
         <Outlet />
