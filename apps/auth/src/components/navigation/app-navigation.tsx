@@ -21,9 +21,12 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
       <header className="flex justify-between p-4">
         <Button
           variant="link"
+          nativeButton={false}
           render={<Link to="/dashboard">auth-plattform</Link>}
         />
-        <Button onClick={handleSignOut}>Signout</Button>
+        <Button variant={"destructive"} onClick={handleSignOut}>
+          Signout
+        </Button>
       </header>
       <div className="flex size-full divide-x divide-border">
         <aside className="w-3xs">
@@ -33,6 +36,7 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
               <div>
                 <Button
                   variant="link"
+                  nativeButton={false}
                   render={
                     <Link
                       to="/dashboard"
@@ -53,6 +57,7 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
                 <div>
                   <Button
                     variant="link"
+                    nativeButton={false}
                     render={
                       <Link
                         to="/admin"
