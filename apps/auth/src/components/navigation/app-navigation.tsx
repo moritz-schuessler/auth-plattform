@@ -3,13 +3,12 @@ import { Link, useRouter } from "@tanstack/react-router"
 import type { PropsWithChildren } from "react"
 import { authClient } from "@/lib/auth/client/auth-client"
 
-type AppNavigationProps = PropsWithChildren
+type AppNavigationProps = PropsWithChildren<{
+  isAdmin: boolean
+}>
 
-const AppNavigation = ({ children }: AppNavigationProps) => {
+const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
   const router = useRouter()
-
-  const { data } = authClient.useSession()
-  const isAdmin = data?.user.role === "admin"
 
   const handleSignOut = () => {
     authClient.signOut().then(() => {

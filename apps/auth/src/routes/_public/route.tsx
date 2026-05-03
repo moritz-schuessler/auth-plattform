@@ -16,9 +16,11 @@ export const Route = createFileRoute("/_public")({
 function PathlessLayoutComponent() {
   const { user } = Route.useRouteContext()
 
+  const isAuthenticated = !!user
+
   return (
     <>
-      <PublicNavigation user={user} />
+      <PublicNavigation isAuthenticated={isAuthenticated} />
       <Outlet />
     </>
   )
