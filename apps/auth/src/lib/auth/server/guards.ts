@@ -11,6 +11,21 @@ const requireSession = async () => {
   return session
 }
 
+const requireAdmin = async () => {
+  const session = await getSession()
+
+  if (!session) {
+    throw redirect({ to: "/login" })
+  }
+
+  if (!session.user.role?.includes("admin")) {
+    console.warn("User is not an admin, redirecting to dashboard")
+    throw redirect({ to: "/dashboard" })
+  }
+
+  return session
+}
+
 const requireAnonymous = async () => {
   const session = await getSession()
 
@@ -23,4 +38,4 @@ const requireAnonymous = async () => {
   return null
 }
 
-export { requireSession, requireAnonymous }
+export { requireSession, requireAdmin, requireAnonymous }

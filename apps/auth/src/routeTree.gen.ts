@@ -16,6 +16,8 @@ import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as UnauthenticatedSignupRouteImport } from './routes/_unauthenticated/signup'
 import { Route as UnauthenticatedLoginRouteImport } from './routes/_unauthenticated/login'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
+import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 
 const UnauthenticatedRouteRoute = UnauthenticatedRouteRouteImport.update({
@@ -50,6 +52,15 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
   id: '/(api)/api/auth/$',
   path: '/api/auth/$',
@@ -61,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/login': typeof UnauthenticatedLoginRoute
   '/signup': typeof UnauthenticatedSignupRoute
+  '/admin': typeof AuthenticatedAdminAdminRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
@@ -68,6 +80,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/login': typeof UnauthenticatedLoginRoute
   '/signup': typeof UnauthenticatedSignupRoute
+  '/admin': typeof AuthenticatedAdminAdminRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -75,26 +88,36 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
+  '/_authenticated/_admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_unauthenticated/login': typeof UnauthenticatedLoginRoute
   '/_unauthenticated/signup': typeof UnauthenticatedSignupRoute
   '/_public/': typeof PublicIndexRoute
+  '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/signup' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/admin'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/signup' | '/api/auth/$'
+  to: '/' | '/dashboard' | '/login' | '/signup' | '/admin' | '/api/auth/$'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_public'
     | '/_unauthenticated'
+    | '/_authenticated/_admin'
     | '/_authenticated/dashboard'
     | '/_unauthenticated/login'
     | '/_unauthenticated/signup'
     | '/_public/'
+    | '/_authenticated/_admin/admin'
     | '/(api)/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -156,6 +179,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/_admin': {
+      id: '/_authenticated/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/_admin/admin': {
+      id: '/_authenticated/_admin/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminAdminRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/(api)/api/auth/$': {
       id: '/(api)/api/auth/$'
       path: '/api/auth/$'
@@ -166,11 +203,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAdminRoute: typeof AuthenticatedAdminAdminRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAdminRoute: AuthenticatedAdminAdminRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
 }
 
