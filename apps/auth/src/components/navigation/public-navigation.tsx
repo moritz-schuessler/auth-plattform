@@ -1,13 +1,16 @@
 import { Button } from "@auth-plattform/ui/components/button"
 import { Link } from "@tanstack/react-router"
-import type { User } from "better-auth"
 
-const PublicNavigation = ({ user }: { user: User | null }) => {
+type PublicNavigationProps = {
+  isAuthenticated: boolean
+}
+
+const PublicNavigation = ({ isAuthenticated }: PublicNavigationProps) => {
   return (
     <header className="flex justify-between border-b border-border p-4">
       <Button variant="link" render={<Link to="/"> auth-plattform</Link>} />
       <nav className="flex gap-4">
-        {user ? (
+        {isAuthenticated ? (
           <Button
             variant="link"
             render={<Link to="/dashboard">dashboard</Link>}
