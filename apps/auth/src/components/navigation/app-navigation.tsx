@@ -17,7 +17,10 @@ const AppNavigation = ({ children }: AppNavigationProps) => {
   return (
     <div className="flex h-dvh flex-col divide-y divide-border">
       <header className="flex justify-between p-4">
-        <Button variant="link" render={<Link to="/">auth-plattform</Link>} />
+        <Button
+          variant="link"
+          render={<Link to="/dashboard">auth-plattform</Link>}
+        />
         <Button onClick={handleSignOut}>Signout</Button>
       </header>
       <div className="flex size-full divide-x divide-border">
