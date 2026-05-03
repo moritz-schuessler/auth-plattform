@@ -3,7 +3,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router"
 import { requireAnonymous } from "@/lib/auth/server/guards"
 import AuthNavigation from "@/components/navigation/auth-navigation"
 
-export const Route = createFileRoute("/(auth)/_anonymous")({
+export const Route = createFileRoute("/_unauthenticated")({
   beforeLoad: async () => {
     await requireAnonymous()
   },

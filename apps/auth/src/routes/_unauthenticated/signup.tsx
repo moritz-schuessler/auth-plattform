@@ -13,20 +13,21 @@ import { cn } from "@auth-plattform/ui/lib/utils"
 
 import { authClient } from "@/lib/auth/client/auth-client"
 
-export const Route = createFileRoute("/(auth)/_anonymous/login")({
+export const Route = createFileRoute("/_unauthenticated/signup")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const mutation = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
-      const response = await authClient.signIn.email({
+      const response = await authClient.signUp.email({
+        name: "",
         email: data.email,
         password: data.password,
       })
 
       if (response.error) {
-        throw new Error(response.error.message || "Login failed")
+        throw new Error(response.error.message || "Sign Up failed")
       }
 
       return response
@@ -49,9 +50,9 @@ function RouteComponent() {
   )
 
   return (
-    <main className="flex h-full w-full flex-col items-center justify-center">
+    <main className="flex w-full flex-col items-center justify-center">
       <div className="flex w-full max-w-[60ch] flex-col gap-6">
-        <h1 className="text-2xl">Login to your Account</h1>
+        <h1 className="text-2xl">Create an Account</h1>
         <form
           className="flex h-full flex-col items-center justify-center gap-6"
           onSubmit={handleSubmit}
@@ -71,19 +72,19 @@ function RouteComponent() {
             </Field>
           </div>
           <Button type="submit" variant="default" className="flex w-full">
-            Login
+            Sign Up
           </Button>
         </form>
         <div className="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
-          Don't have an account?
+          Already have an account?
           <a
-            href="/signup"
+            href="/login"
             className={cn(
               buttonVariants({ variant: "link", size: "sm" }),
               "p-0"
             )}
           >
-            Sign Up
+            Log in
           </a>
         </div>
       </div>
