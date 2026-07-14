@@ -19,6 +19,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
+import { Route as apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport } from './routes/(api)/[.]well-known.oauth-authorization-server.api.auth'
 
 const UnauthenticatedRouteRoute = UnauthenticatedRouteRouteImport.update({
   id: '/_unauthenticated',
@@ -66,6 +67,12 @@ const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const apiDotwellKnownOauthAuthorizationServerApiAuthRoute =
+  apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport.update({
+    id: '/(api)/.well-known/oauth-authorization-server/api/auth',
+    path: '/.well-known/oauth-authorization-server/api/auth',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof UnauthenticatedSignupRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
   '/signup': typeof UnauthenticatedSignupRoute
   '/admin': typeof AuthenticatedAdminAdminRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
+  '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
+  '/(api)/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -105,8 +115,16 @@ export interface FileRouteTypes {
     | '/signup'
     | '/admin'
     | '/api/auth/$'
+    | '/.well-known/oauth-authorization-server/api/auth'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/signup' | '/admin' | '/api/auth/$'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/admin'
+    | '/api/auth/$'
+    | '/.well-known/oauth-authorization-server/api/auth'
   id:
     | '__root__'
     | '/_authenticated'
@@ -119,6 +137,7 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/_authenticated/_admin/admin'
     | '/(api)/api/auth/$'
+    | '/(api)/.well-known/oauth-authorization-server/api/auth'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -126,6 +145,7 @@ export interface RootRouteChildren {
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   UnauthenticatedRouteRoute: typeof UnauthenticatedRouteRouteWithChildren
   apiApiAuthSplatRoute: typeof apiApiAuthSplatRoute
+  apiDotwellKnownOauthAuthorizationServerApiAuthRoute: typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -200,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/.well-known/oauth-authorization-server/api/auth': {
+      id: '/(api)/.well-known/oauth-authorization-server/api/auth'
+      path: '/.well-known/oauth-authorization-server/api/auth'
+      fullPath: '/.well-known/oauth-authorization-server/api/auth'
+      preLoaderRoute: typeof apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -260,6 +287,8 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRouteRoute: PublicRouteRouteWithChildren,
   UnauthenticatedRouteRoute: UnauthenticatedRouteRouteWithChildren,
   apiApiAuthSplatRoute: apiApiAuthSplatRoute,
+  apiDotwellKnownOauthAuthorizationServerApiAuthRoute:
+    apiDotwellKnownOauthAuthorizationServerApiAuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
