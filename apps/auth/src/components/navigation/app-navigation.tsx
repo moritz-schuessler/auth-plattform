@@ -60,12 +60,12 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
                     nativeButton={false}
                     render={
                       <Link
-                        to="/admin"
+                        to="/admin/users"
                         activeProps={{
                           className: "text-primary",
                         }}
                       >
-                        Admin
+                        Users
                       </Link>
                     }
                   />
