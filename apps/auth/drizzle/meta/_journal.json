@@ -15,6 +15,13 @@
       "when": 1777220303277,
       "tag": "0001_violet_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784040239573,
+      "tag": "0002_glamorous_masked_marvel",
+      "breakpoints": true
     }
   ]
 }
