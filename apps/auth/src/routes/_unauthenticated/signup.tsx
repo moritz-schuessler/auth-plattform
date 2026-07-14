@@ -32,7 +32,13 @@ function RouteComponent() {
 
       return response
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      const data = response.data as unknown as { url?: string }
+      if (data.url) {
+        window.location.href = data.url
+        return
+      }
+
       throw redirect({ to: "/" })
     },
   })
