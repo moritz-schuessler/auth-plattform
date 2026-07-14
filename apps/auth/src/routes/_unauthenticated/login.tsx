@@ -31,7 +31,12 @@ function RouteComponent() {
 
       return response
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (response.data.url) {
+        window.location.href = response.data.url
+        return
+      }
+
       throw redirect({ to: "/" })
     },
   })
