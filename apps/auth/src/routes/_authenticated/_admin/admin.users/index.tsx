@@ -12,7 +12,7 @@ const listUsers = createServerFn({ method: "GET" }).handler(async () => {
   })
 })
 
-export const Route = createFileRoute("/_authenticated/_admin/admin/users")({
+export const Route = createFileRoute("/_authenticated/_admin/admin/users/")({
   loader: async () => {
     return await listUsers()
   },

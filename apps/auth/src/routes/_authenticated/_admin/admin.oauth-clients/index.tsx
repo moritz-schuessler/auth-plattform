@@ -29,7 +29,7 @@ const listOAuthClients = createServerFn({ method: "GET" }).handler(
 )
 
 export const Route = createFileRoute(
-  "/_authenticated/_admin/admin/oauth-clients"
+  "/_authenticated/_admin/admin/oauth-clients/"
 )({
   loader: async () => {
     return await listOAuthClients()
