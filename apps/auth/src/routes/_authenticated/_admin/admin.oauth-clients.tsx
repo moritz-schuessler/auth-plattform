@@ -1,20 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import type { OAuthClient as BetterAuthOAuthClient } from "@better-auth/oauth-provider"
 import { auth } from "@/lib/auth/server/auth"
 
-const listOAuthClients = createServerFn({ method: "GET" }).handler(async () => {
-  const headers = getRequestHeaders()
+// better-auth's OAuthClient has a `[key: string]: unknown` index signature
+// that TanStack Start cannot prove is serializable; drop it while keeping
+// every named field.
+type OAuthClient = {
+  [K in keyof BetterAuthOAuthClient as string extends K
+    ? never
+    : K]: BetterAuthOAuthClient[K]
+}
 
-  const oAuthClients = await auth.api.getOAuthClients({
-    headers,
-    query: {},
-  })
+const listOAuthClients = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ oAuthClients: Array<OAuthClient> }> => {
+    const headers = getRequestHeaders()
 
-  return {
-    oAuthClients: oAuthClients ?? [],
+    const oAuthClients = await auth.api.getOAuthClients({
+      headers,
+      query: {},
+    })
+
+    return {
+      oAuthClients: oAuthClients ?? [],
+    }
   }
-})
+)
 
 export const Route = createFileRoute(
   "/_authenticated/_admin/admin/oauth-clients"
