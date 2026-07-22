@@ -69,6 +69,22 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
                       </Link>
                     }
                   />
+                  <div>
+                    <Button
+                      variant="link"
+                      nativeButton={false}
+                      render={
+                        <Link
+                          to="/admin/oauth-clients"
+                          activeProps={{
+                            className: "text-primary",
+                          }}
+                        >
+                          OAuth Clients
+                        </Link>
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             )}
