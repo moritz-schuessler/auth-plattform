@@ -20,6 +20,7 @@ import { Route as UnauthenticatedSignupRouteImport } from './routes/_unauthentic
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport } from './routes/(api)/[.]well-known.oauth-authorization-server.api.auth'
 import { Route as AuthenticatedAdminAdminOauthClientsIndexRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/index'
+import { Route as AuthenticatedAdminAdminOauthClientsNewRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/new'
 import { Route as AuthenticatedAdminAdminUsersIndexRouteImport } from './routes/_authenticated/_admin/admin.users/index'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -75,6 +76,12 @@ const AuthenticatedAdminAdminOauthClientsIndexRoute =
     path: '/admin/oauth-clients/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAdminOauthClientsNewRoute =
+  AuthenticatedAdminAdminOauthClientsNewRouteImport.update({
+    id: '/admin/oauth-clients/new',
+    path: '/admin/oauth-clients/new',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAdminUsersIndexRoute =
   AuthenticatedAdminAdminUsersIndexRouteImport.update({
     id: '/admin/users/',
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof UnauthenticatedSignupRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
+  '/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
   '/admin/oauth-clients/': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/admin/users/': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/signup': typeof UnauthenticatedSignupRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
+  '/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
   '/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
+  '/_authenticated/_admin/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
   '/_authenticated/_admin/admin/oauth-clients/': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/_authenticated/_admin/admin/users/': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/api/auth/$'
     | '/.well-known/oauth-authorization-server/api/auth'
+    | '/admin/oauth-clients/new'
     | '/admin/oauth-clients/'
     | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/api/auth/$'
     | '/.well-known/oauth-authorization-server/api/auth'
+    | '/admin/oauth-clients/new'
     | '/admin/oauth-clients'
     | '/admin/users'
   id:
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/(api)/api/auth/$'
     | '/(api)/.well-known/oauth-authorization-server/api/auth'
+    | '/_authenticated/_admin/admin/oauth-clients/new'
     | '/_authenticated/_admin/admin/oauth-clients/'
     | '/_authenticated/_admin/admin/users/'
   fileRoutesById: FileRoutesById
@@ -241,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/_admin/admin/oauth-clients/new': {
+      id: '/_authenticated/_admin/admin/oauth-clients/new'
+      path: '/admin/oauth-clients/new'
+      fullPath: '/admin/oauth-clients/new'
+      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/_admin/admin/users/': {
       id: '/_authenticated/_admin/admin/users/'
       path: '/admin/users'
@@ -252,12 +272,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAdminOauthClientsNewRoute: typeof AuthenticatedAdminAdminOauthClientsNewRoute
   AuthenticatedAdminAdminOauthClientsIndexRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   AuthenticatedAdminAdminUsersIndexRoute: typeof AuthenticatedAdminAdminUsersIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
+    AuthenticatedAdminAdminOauthClientsNewRoute:
+      AuthenticatedAdminAdminOauthClientsNewRoute,
     AuthenticatedAdminAdminOauthClientsIndexRoute:
       AuthenticatedAdminAdminOauthClientsIndexRoute,
     AuthenticatedAdminAdminUsersIndexRoute:
