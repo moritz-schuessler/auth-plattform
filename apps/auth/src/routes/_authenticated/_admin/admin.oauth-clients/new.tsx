@@ -1,9 +1,7 @@
 import { useCallback } from "react"
-import { useMutation } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { Input } from "@auth-plattform/ui/components/input"
-
-import { authClient } from "@/lib/auth/client/auth-client"
+import useCreateOAuthClient from "./-hooks/use-create-client"
 
 export const Route = createFileRoute(
   "/_authenticated/_admin/admin/oauth-clients/new"
@@ -13,24 +11,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
-
-  const mutation = useMutation({
-    mutationFn: async (data: { client_name: string; redirect_uri: string }) => {
-      const response = await authClient.oauth2.createClient({
-        client_name: data.client_name,
-        redirect_uris: [data.redirect_uri],
-      })
-
-      if (response.error) {
-        throw new Error(response.error.message || "Create OAuth Client failed")
-      }
-
-      return response.data
-    },
-    onSuccess: (data) => {
-      navigate({ to: ".." })
-    },
-  })
+  const mutation = useCreateOAuthClient()
 
   const handleSubmit = useCallback(
     (event: React.SubmitEvent<HTMLFormElement>) => {
@@ -39,7 +20,14 @@ function RouteComponent() {
       const client_name = formData.get("client_name")!.toString()
       const redirect_uri = formData.get("redirect_uri")!.toString()
 
-      mutation.mutate({ client_name, redirect_uri })
+      mutation.mutate(
+        { client_name, redirect_uri },
+        {
+          onSuccess: () => {
+            navigate({ to: ".." })
+          },
+        }
+      )
     },
     []
   )
