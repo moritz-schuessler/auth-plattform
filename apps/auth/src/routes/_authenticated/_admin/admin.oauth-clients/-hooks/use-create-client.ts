@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import useCreatedClient from "./use-created-client"
+import useClientSecret from "./use-client-secret"
 import { auth } from "@/lib/auth/server/auth"
 
 const createOAuthClient = createServerFn({ method: "POST" })
@@ -25,7 +25,7 @@ const createOAuthClient = createServerFn({ method: "POST" })
   })
 
 const useCreateClient = () => {
-  const { setCreatedClient } = useCreatedClient()
+  const { setClientSecret } = useClientSecret()
 
   return useMutation({
     mutationFn: async (data: { client_name: string; redirect_uri: string }) => {
@@ -33,8 +33,10 @@ const useCreateClient = () => {
 
       return { ...client, client_name: data.client_name }
     },
-    onSuccess: (client) => {
-      setCreatedClient(client)
+    onSuccess: ({ client_secret, ...client }) => {
+      if (client_secret) {
+        setClientSecret({ reason: "created", ...client, client_secret })
+      }
     },
     gcTime: 0,
   })

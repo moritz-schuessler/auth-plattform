@@ -4,8 +4,8 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { Plus } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@auth-plattform/ui/components/button"
-import CreatedClientCard from "./-components/created-client-card"
-import useCreatedClient from "./-hooks/use-created-client"
+import ClientSecretCard from "./-components/client-secret-card"
+import useClientSecret from "./-hooks/use-client-secret"
 import type { OAuthClient as BetterAuthOAuthClient } from "@better-auth/oauth-provider"
 import { auth } from "@/lib/auth/server/auth"
 
@@ -44,7 +44,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { oAuthClients } = Route.useLoaderData()
-  const { createdClient, setCreatedClient } = useCreatedClient()
+  const { clientSecret, setClientSecret } = useClientSecret()
 
   return (
     <main className="flex w-full flex-col gap-4 p-4">
@@ -66,17 +66,17 @@ function RouteComponent() {
           }
         />
       </div>
-      {createdClient && (
-        <CreatedClientCard
-          client={createdClient}
-          onDismiss={() => setCreatedClient(null)}
+      {clientSecret && (
+        <ClientSecretCard
+          clientSecret={clientSecret}
+          onDismiss={() => setClientSecret(null)}
         />
       )}
       <ul>
         {oAuthClients.map((client) => (
           <li key={client.client_id} className="flex items-center gap-2">
             {client.client_name ?? client.client_id}
-            {createdClient?.client_id === client.client_id && (
+            {clientSecret?.client_id === client.client_id && (
               <span className="bg-primary/10 px-1.5 text-xs text-primary">
                 new
               </span>

@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
-import { CreatedClientProvider } from "./-hooks/use-created-client"
+import { ClientSecretProvider } from "./-hooks/use-client-secret"
 
 export const Route = createFileRoute(
   "/_authenticated/_admin/admin/oauth-clients"
@@ -9,8 +9,8 @@ export const Route = createFileRoute(
 
 function LayoutComponent() {
   return (
-    <CreatedClientProvider>
+    <ClientSecretProvider>
       <Outlet />
-    </CreatedClientProvider>
+    </ClientSecretProvider>
   )
 }
