@@ -4,9 +4,9 @@ const loopbackHosts = ["localhost", "127.0.0.1", "[::1]"]
 
 const forbiddenProtocols = ["javascript:", "data:", "vbscript:"]
 
-const getRedirectUriError = (value: string) => {
+const getUrlError = (value: string) => {
   if (!URL.canParse(value)) {
-    return "Enter a valid URL, for example https://app.example.com/auth/callback."
+    return "Enter a valid URL, for example https://app.example.com."
   }
 
   const url = new URL(value)
@@ -26,6 +26,14 @@ const getRedirectUriError = (value: string) => {
   return null
 }
 
+const validateUrl = (value: string, context: z.RefinementCtx) => {
+  const message = value ? getUrlError(value) : null
+
+  if (message) {
+    context.addIssue({ code: "custom", message })
+  }
+}
+
 const createClientSchema = z.object({
   client_name: z
     .string()
@@ -36,13 +44,8 @@ const createClientSchema = z.object({
     .string()
     .trim()
     .min(1, "Enter a redirect URL.")
-    .superRefine((value, context) => {
-      const message = value ? getRedirectUriError(value) : null
-
-      if (message) {
-        context.addIssue({ code: "custom", message })
-      }
-    }),
+    .superRefine(validateUrl),
+  post_logout_redirect_uri: z.string().trim().superRefine(validateUrl),
 })
 
 type CreateClientInput = z.infer<typeof createClientSchema>

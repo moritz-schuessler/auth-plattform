@@ -19,7 +19,11 @@ const createOAuthClient = createServerFn({ method: "POST" })
       body: {
         client_name: data.client_name,
         redirect_uris: [data.redirect_uri],
+        post_logout_redirect_uris: data.post_logout_redirect_uri
+          ? [data.post_logout_redirect_uri]
+          : undefined,
         skip_consent: true,
+        enable_end_session: true,
       },
     })
 
