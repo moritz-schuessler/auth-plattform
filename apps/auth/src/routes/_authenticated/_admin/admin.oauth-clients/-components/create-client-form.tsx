@@ -11,13 +11,15 @@ interface CreateClientFormProps {
     data: CreateClientInput,
     options: { onSuccess: () => void }
   ) => void
+  error?: string | null
 }
 
 type FieldErrors = Partial<Record<keyof CreateClientInput, string>>
 
-const CreateClientForm = ({ onSubmit }: CreateClientFormProps) => {
+const CreateClientForm = ({ onSubmit, error }: CreateClientFormProps) => {
   const navigate = useNavigate()
   const [errors, setErrors] = useState<FieldErrors>({})
+  const hasFieldErrors = Boolean(errors.client_name || errors.redirect_uri)
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -81,6 +83,7 @@ const CreateClientForm = ({ onSubmit }: CreateClientFormProps) => {
           <FieldError id="redirect_uri-error">{errors.redirect_uri}</FieldError>
         )}
       </div>
+      {error && !hasFieldErrors && <FieldError>{error}</FieldError>}
       <button
         type="submit"
         className="hover:bg-primary-dark rounded bg-primary px-4 py-2 text-white"
