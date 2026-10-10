@@ -1,5 +1,5 @@
 import { Fragment, createContext, useContext, useState } from "react"
-import { Link } from "@tanstack/react-router"
+import { Link, useRouter } from "@tanstack/react-router"
 import {
   columnFilteringFeature,
   columnVisibilityFeature,
@@ -34,6 +34,7 @@ import { cn } from "@auth-plattform/ui/lib/utils"
 import useClientSecret from "../-hooks/use-client-secret"
 import useRotateSecret from "../-hooks/use-rotate-secret"
 import CopyButton from "./copy-button"
+import DeleteClientDialog from "./delete-client-dialog"
 import type { SortingState } from "@tanstack/react-table"
 
 interface Client {
@@ -167,21 +168,38 @@ const SecretCell = ({ client }: { client: Client }) => {
 }
 
 const ActionsCell = ({ client }: { client: Client }) => {
+  const router = useRouter()
+
   return (
-    <Button
-      variant="outline"
-      size="xs"
-      nativeButton={false}
-      aria-label={`Edit ${getName(client)}`}
-      render={
-        <Link
-          to="/admin/oauth-clients/$clientId"
-          params={{ clientId: client.client_id }}
-        >
-          Edit
-        </Link>
-      }
-    />
+    <div className="flex justify-end gap-2">
+      <Button
+        variant="outline"
+        size="xs"
+        nativeButton={false}
+        aria-label={`Edit ${getName(client)}`}
+        render={
+          <Link
+            to="/admin/oauth-clients/$clientId"
+            params={{ clientId: client.client_id }}
+          >
+            Edit
+          </Link>
+        }
+      />
+      <DeleteClientDialog
+        client={client}
+        onDeleted={() => router.invalidate()}
+        trigger={
+          <Button
+            variant="outline"
+            size="xs"
+            aria-label={`Delete ${getName(client)}`}
+          >
+            Delete
+          </Button>
+        }
+      />
+    </div>
   )
 }
 

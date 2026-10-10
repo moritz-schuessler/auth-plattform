@@ -1,4 +1,9 @@
-import { Link, createFileRoute, notFound } from "@tanstack/react-router"
+import {
+  Link,
+  createFileRoute,
+  notFound,
+  useNavigate,
+} from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 import { Button } from "@auth-plattform/ui/components/button"
@@ -6,6 +11,7 @@ import { Separator } from "@auth-plattform/ui/components/separator"
 import ClientCredentials from "./-components/client-credentials"
 import ClientNameForm from "./-components/client-name-form"
 import ClientSecretCard from "./-components/client-secret-card"
+import DeleteClientDialog from "./-components/delete-client-dialog"
 import RedirectUrls from "./-components/redirect-urls"
 import useClientSecret from "./-hooks/use-client-secret"
 import { auth } from "@/lib/auth/server/auth"
@@ -50,6 +56,7 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { client } = Route.useLoaderData()
   const { clientSecret, setClientSecret } = useClientSecret()
+  const navigate = useNavigate()
 
   return (
     <main className="flex w-full flex-col gap-6 overflow-y-auto p-4">
@@ -80,6 +87,21 @@ function RouteComponent() {
       </section>
       <Separator />
       <RedirectUrls client={client} />
+      <Separator />
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg">Danger zone</h2>
+        <div className="flex items-center justify-between gap-4 text-sm">
+          <span className="text-muted-foreground">
+            Deleting a client can't be undone. Every application using it stops
+            working immediately.
+          </span>
+          <DeleteClientDialog
+            client={client}
+            onDeleted={() => navigate({ to: "/admin/oauth-clients" })}
+            trigger={<Button variant="destructive">Delete client</Button>}
+          />
+        </div>
+      </section>
     </main>
   )
 }
