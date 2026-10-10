@@ -3,10 +3,13 @@ import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 import useClientSecret from "./use-client-secret"
 import { auth } from "@/lib/auth/server/auth"
+import { requireAdmin } from "@/lib/auth/server/guards"
 
 const createOAuthClient = createServerFn({ method: "POST" })
   .inputValidator((data: { client_name: string; redirect_uri: string }) => data)
   .handler(async ({ data }) => {
+    await requireAdmin()
+
     const headers = getRequestHeaders()
 
     const client = await auth.api.adminCreateOAuthClient({
