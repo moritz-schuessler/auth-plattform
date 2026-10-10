@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import useCreatedClient from "./use-created-client"
 import { auth } from "@/lib/auth/server/auth"
 
 const createOAuthClient = createServerFn({ method: "POST" })
@@ -8,7 +9,7 @@ const createOAuthClient = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const headers = getRequestHeaders()
 
-    await auth.api.adminCreateOAuthClient({
+    const client = await auth.api.adminCreateOAuthClient({
       headers,
       body: {
         client_name: data.client_name,
@@ -16,13 +17,26 @@ const createOAuthClient = createServerFn({ method: "POST" })
         skip_consent: true,
       },
     })
+
+    return {
+      client_id: client.client_id,
+      client_secret: client.client_secret,
+    }
   })
 
 const useCreateClient = () => {
+  const { setCreatedClient } = useCreatedClient()
+
   return useMutation({
     mutationFn: async (data: { client_name: string; redirect_uri: string }) => {
-      await createOAuthClient({ data })
+      const client = await createOAuthClient({ data })
+
+      return { ...client, client_name: data.client_name }
     },
+    onSuccess: (client) => {
+      setCreatedClient(client)
+    },
+    gcTime: 0,
   })
 }
 

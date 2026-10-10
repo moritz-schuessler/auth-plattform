@@ -9,77 +9,66 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as UnauthenticatedRouteRouteImport } from './routes/_unauthenticated/route'
-import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as UnauthenticatedLoginRouteImport } from './routes/_unauthenticated/login'
 import { Route as UnauthenticatedSignupRouteImport } from './routes/_unauthenticated/signup'
+import { Route as UnauthenticatedLoginRouteImport } from './routes/_unauthenticated/login'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
-import { Route as apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport } from './routes/(api)/[.]well-known.oauth-authorization-server.api.auth'
+import { Route as AuthenticatedAdminAdminOauthClientsRouteRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/route'
+import { Route as AuthenticatedAdminAdminUsersIndexRouteImport } from './routes/_authenticated/_admin/admin.users/index'
 import { Route as AuthenticatedAdminAdminOauthClientsIndexRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/index'
 import { Route as AuthenticatedAdminAdminOauthClientsNewRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/new'
-import { Route as AuthenticatedAdminAdminUsersIndexRouteImport } from './routes/_authenticated/_admin/admin.users/index'
+import { Route as apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport } from './routes/(api)/[.]well-known.oauth-authorization-server.api.auth'
 
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const UnauthenticatedRouteRoute = UnauthenticatedRouteRouteImport.update({
+  id: '/_unauthenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UnauthenticatedRouteRoute = UnauthenticatedRouteRouteImport.update({
-  id: '/_unauthenticated',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
-  id: '/_admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRouteRoute,
 } as any)
+const UnauthenticatedSignupRoute = UnauthenticatedSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => UnauthenticatedRouteRoute,
+} as any)
 const UnauthenticatedLoginRoute = UnauthenticatedLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => UnauthenticatedRouteRoute,
 } as any)
-const UnauthenticatedSignupRoute = UnauthenticatedSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => UnauthenticatedRouteRoute,
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const apiApiAuthSplatRoute = apiApiAuthSplatRouteImport.update({
   id: '/(api)/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const apiDotwellKnownOauthAuthorizationServerApiAuthRoute =
-  apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport.update({
-    id: '/(api)/.well-known/oauth-authorization-server/api/auth',
-    path: '/.well-known/oauth-authorization-server/api/auth',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedAdminAdminOauthClientsIndexRoute =
-  AuthenticatedAdminAdminOauthClientsIndexRouteImport.update({
-    id: '/admin/oauth-clients/',
-    path: '/admin/oauth-clients/',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
-  } as any)
-const AuthenticatedAdminAdminOauthClientsNewRoute =
-  AuthenticatedAdminAdminOauthClientsNewRouteImport.update({
-    id: '/admin/oauth-clients/new',
-    path: '/admin/oauth-clients/new',
+const AuthenticatedAdminAdminOauthClientsRouteRoute =
+  AuthenticatedAdminAdminOauthClientsRouteRouteImport.update({
+    id: '/admin/oauth-clients',
+    path: '/admin/oauth-clients',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminAdminUsersIndexRoute =
@@ -88,12 +77,31 @@ const AuthenticatedAdminAdminUsersIndexRoute =
     path: '/admin/users/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAdminOauthClientsIndexRoute =
+  AuthenticatedAdminAdminOauthClientsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminAdminOauthClientsRouteRoute,
+  } as any)
+const AuthenticatedAdminAdminOauthClientsNewRoute =
+  AuthenticatedAdminAdminOauthClientsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminAdminOauthClientsRouteRoute,
+  } as any)
+const apiDotwellKnownOauthAuthorizationServerApiAuthRoute =
+  apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport.update({
+    id: '/(api)/.well-known/oauth-authorization-server/api/auth',
+    path: '/.well-known/oauth-authorization-server/api/auth',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/login': typeof UnauthenticatedLoginRoute
   '/signup': typeof UnauthenticatedSignupRoute
+  '/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/_unauthenticated/login': typeof UnauthenticatedLoginRoute
   '/_unauthenticated/signup': typeof UnauthenticatedSignupRoute
   '/_public/': typeof PublicIndexRoute
+  '/_authenticated/_admin/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/_authenticated/_admin/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/admin/oauth-clients'
     | '/api/auth/$'
     | '/.well-known/oauth-authorization-server/api/auth'
     | '/admin/oauth-clients/new'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/_unauthenticated/login'
     | '/_unauthenticated/signup'
     | '/_public/'
+    | '/_authenticated/_admin/admin/oauth-clients'
     | '/(api)/api/auth/$'
     | '/(api)/.well-known/oauth-authorization-server/api/auth'
     | '/_authenticated/_admin/admin/oauth-clients/new'
@@ -177,11 +188,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_unauthenticated': {
+      id: '/_unauthenticated'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      preLoaderRoute: typeof UnauthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public': {
@@ -191,26 +202,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_unauthenticated': {
-      id: '/_unauthenticated'
+    '/_authenticated': {
+      id: '/_authenticated'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof UnauthenticatedRouteRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/_admin': {
-      id: '/_authenticated/_admin'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -219,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRouteRoute
     }
+    '/_unauthenticated/signup': {
+      id: '/_unauthenticated/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof UnauthenticatedSignupRouteImport
+      parentRoute: typeof UnauthenticatedRouteRoute
+    }
     '/_unauthenticated/login': {
       id: '/_unauthenticated/login'
       path: '/login'
@@ -226,12 +230,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedLoginRouteImport
       parentRoute: typeof UnauthenticatedRouteRoute
     }
-    '/_unauthenticated/signup': {
-      id: '/_unauthenticated/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof UnauthenticatedSignupRouteImport
-      parentRoute: typeof UnauthenticatedRouteRoute
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/_admin': {
+      id: '/_authenticated/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/(api)/api/auth/$': {
       id: '/(api)/api/auth/$'
@@ -240,25 +251,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof apiApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(api)/.well-known/oauth-authorization-server/api/auth': {
-      id: '/(api)/.well-known/oauth-authorization-server/api/auth'
-      path: '/.well-known/oauth-authorization-server/api/auth'
-      fullPath: '/.well-known/oauth-authorization-server/api/auth'
-      preLoaderRoute: typeof apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/_admin/admin/oauth-clients/': {
-      id: '/_authenticated/_admin/admin/oauth-clients/'
+    '/_authenticated/_admin/admin/oauth-clients': {
+      id: '/_authenticated/_admin/admin/oauth-clients'
       path: '/admin/oauth-clients'
-      fullPath: '/admin/oauth-clients/'
-      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
-    }
-    '/_authenticated/_admin/admin/oauth-clients/new': {
-      id: '/_authenticated/_admin/admin/oauth-clients/new'
-      path: '/admin/oauth-clients/new'
-      fullPath: '/admin/oauth-clients/new'
-      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsNewRouteImport
+      fullPath: '/admin/oauth-clients'
+      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/_admin/admin/users/': {
@@ -268,21 +265,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminUsersIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/_admin/admin/oauth-clients/': {
+      id: '/_authenticated/_admin/admin/oauth-clients/'
+      path: '/'
+      fullPath: '/admin/oauth-clients/'
+      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRoute
+    }
+    '/_authenticated/_admin/admin/oauth-clients/new': {
+      id: '/_authenticated/_admin/admin/oauth-clients/new'
+      path: '/new'
+      fullPath: '/admin/oauth-clients/new'
+      preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRoute
+    }
+    '/(api)/.well-known/oauth-authorization-server/api/auth': {
+      id: '/(api)/.well-known/oauth-authorization-server/api/auth'
+      path: '/.well-known/oauth-authorization-server/api/auth'
+      fullPath: '/.well-known/oauth-authorization-server/api/auth'
+      preLoaderRoute: typeof apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
-interface AuthenticatedAdminRouteRouteChildren {
+interface AuthenticatedAdminAdminOauthClientsRouteRouteChildren {
   AuthenticatedAdminAdminOauthClientsNewRoute: typeof AuthenticatedAdminAdminOauthClientsNewRoute
   AuthenticatedAdminAdminOauthClientsIndexRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRoute
-  AuthenticatedAdminAdminUsersIndexRoute: typeof AuthenticatedAdminAdminUsersIndexRoute
 }
 
-const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+const AuthenticatedAdminAdminOauthClientsRouteRouteChildren: AuthenticatedAdminAdminOauthClientsRouteRouteChildren =
   {
     AuthenticatedAdminAdminOauthClientsNewRoute:
       AuthenticatedAdminAdminOauthClientsNewRoute,
     AuthenticatedAdminAdminOauthClientsIndexRoute:
       AuthenticatedAdminAdminOauthClientsIndexRoute,
+  }
+
+const AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren =
+  AuthenticatedAdminAdminOauthClientsRouteRoute._addFileChildren(
+    AuthenticatedAdminAdminOauthClientsRouteRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAdminOauthClientsRouteRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
+  AuthenticatedAdminAdminUsersIndexRoute: typeof AuthenticatedAdminAdminUsersIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAdminOauthClientsRouteRoute:
+      AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren,
     AuthenticatedAdminAdminUsersIndexRoute:
       AuthenticatedAdminAdminUsersIndexRoute,
   }
