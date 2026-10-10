@@ -21,6 +21,9 @@ export const auth = betterAuth({
     oauthProvider({
       loginPage: "/login",
       consentPage: "/consent",
+      clientPrivileges: ({ user }) =>
+        typeof user?.role === "string" &&
+        user.role.split(",").includes("admin"),
     }),
     tanstackStartCookies(),
   ],
