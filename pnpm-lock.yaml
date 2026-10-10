@@ -83,6 +83,9 @@ importers:
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.3)(vite@7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(tsx@4.21.0))
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@tanstack/eslint-config':
         specifier: ^0.3.0
