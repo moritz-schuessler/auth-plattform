@@ -1,4 +1,5 @@
 import { Fragment, createContext, useContext, useState } from "react"
+import { Link } from "@tanstack/react-router"
 import {
   columnFilteringFeature,
   columnVisibilityFeature,
@@ -41,6 +42,7 @@ interface Client {
   redirect_uris: Array<string>
   client_id_issued_at?: number
   disabled?: boolean
+  public?: boolean
 }
 
 interface ClientTableProps {
@@ -138,20 +140,48 @@ const RedirectUrlsCell = ({ client }: { client: Client }) => {
   )
 }
 
-const ActionsCell = ({ client }: { client: Client }) => {
+const SecretCell = ({ client }: { client: Client }) => {
   const { panels, togglePanel } = usePanels()
 
+  if (client.public) {
+    return <span className="text-muted-foreground">–</span>
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span aria-hidden="true" className="font-mono text-xs">
+        ••••••••
+      </span>
+      <Button
+        variant="outline"
+        size="xs"
+        aria-label={`Rotate secret of ${getName(client)}`}
+        aria-expanded={panels[client.client_id] === "rotate"}
+        aria-controls={getPanelId(client)}
+        onClick={() => togglePanel(client.client_id, "rotate")}
+      >
+        Rotate
+      </Button>
+    </div>
+  )
+}
+
+const ActionsCell = ({ client }: { client: Client }) => {
   return (
     <Button
       variant="outline"
       size="xs"
-      aria-label={`Rotate secret of ${getName(client)}`}
-      aria-expanded={panels[client.client_id] === "rotate"}
-      aria-controls={getPanelId(client)}
-      onClick={() => togglePanel(client.client_id, "rotate")}
-    >
-      Rotate
-    </Button>
+      nativeButton={false}
+      aria-label={`Edit ${getName(client)}`}
+      render={
+        <Link
+          to="/admin/oauth-clients/$clientId"
+          params={{ clientId: client.client_id }}
+        >
+          Edit
+        </Link>
+      }
+    />
   )
 }
 
@@ -176,6 +206,11 @@ const columns = columnHelper.columns([
   columnHelper.accessor("client_id", {
     header: "Client ID",
     cell: ({ row }) => <ClientIdCell client={row.original} />,
+  }),
+  columnHelper.display({
+    id: "secret",
+    header: "Secret",
+    cell: ({ row }) => <SecretCell client={row.original} />,
   }),
   columnHelper.accessor((client) => client.redirect_uris.length, {
     id: "redirect_uris",
