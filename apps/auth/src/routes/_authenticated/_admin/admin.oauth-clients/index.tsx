@@ -4,6 +4,7 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { Plus } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@auth-plattform/ui/components/button"
+import ClientTable from "./-components/client-table"
 import ClientSecretCard from "./-components/client-secret-card"
 import useClientSecret from "./-hooks/use-client-secret"
 import type { OAuthClient as BetterAuthOAuthClient } from "@better-auth/oauth-provider"
@@ -47,7 +48,7 @@ function RouteComponent() {
   const { clientSecret, setClientSecret } = useClientSecret()
 
   return (
-    <main className="flex w-full flex-col gap-4 p-4">
+    <main className="flex w-full flex-col gap-4 overflow-y-auto p-4">
       <div className="flex justify-between">
         <h1 className="text-2xl">OAuth Clients</h1>
         <Button
@@ -72,19 +73,7 @@ function RouteComponent() {
           onDismiss={() => setClientSecret(null)}
         />
       )}
-      <ul>
-        {oAuthClients.map((client) => (
-          <li key={client.client_id} className="flex items-center gap-2">
-            {client.client_name ?? client.client_id}
-            {clientSecret?.client_id === client.client_id && (
-              <span className="bg-primary/10 px-1.5 text-xs text-primary">
-                new
-              </span>
-            )}
-          </li>
-        ))}
-        {oAuthClients.length === 0 && <li>No OAuth clients found.</li>}
-      </ul>
+      <ClientTable clients={oAuthClients} />
     </main>
   )
 }
