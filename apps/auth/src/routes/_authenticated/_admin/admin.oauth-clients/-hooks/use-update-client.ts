@@ -8,7 +8,11 @@ const useUpdateClient = () => {
   return useMutation({
     mutationFn: async (data: {
       client_id: string
-      update: { client_name?: string; redirect_uris?: Array<string> }
+      update: {
+        client_name?: string
+        redirect_uris?: Array<string>
+        post_logout_redirect_uris?: Array<string>
+      }
     }) => {
       const response = await authClient.oauth2.updateClient(data)
 

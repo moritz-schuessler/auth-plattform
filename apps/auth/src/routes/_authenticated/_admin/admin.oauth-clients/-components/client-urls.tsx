@@ -7,21 +7,33 @@ import { Input } from "@auth-plattform/ui/components/input"
 import useUpdateClient from "../-hooks/use-update-client"
 import CopyButton from "./copy-button"
 
-interface RedirectUrlsProps {
-  client: { client_id: string; redirect_uris: Array<string> }
+interface ClientUrlsProps {
+  clientId: string
+  field: "redirect_uris" | "post_logout_redirect_uris"
+  urls: Array<string>
+  title: string
+  label: string
+  placeholder: string
 }
 
-const RedirectUrls = ({ client }: RedirectUrlsProps) => {
+const ClientUrls = ({
+  clientId,
+  field,
+  urls,
+  title,
+  label,
+  placeholder,
+}: ClientUrlsProps) => {
   const [isAdding, setIsAdding] = useState(false)
   const [url, setUrl] = useState("")
   const mutation = useUpdateClient()
 
   const trimmedUrl = url.trim()
-  const isDuplicate = client.redirect_uris.includes(trimmedUrl)
+  const isDuplicate = urls.includes(trimmedUrl)
 
-  const updateUrls = (redirect_uris: Array<string>, onSuccess?: () => void) => {
+  const updateUrls = (nextUrls: Array<string>, onSuccess?: () => void) => {
     mutation.mutate(
-      { client_id: client.client_id, update: { redirect_uris } },
+      { client_id: clientId, update: { [field]: nextUrls } },
       { onSuccess }
     )
   }
@@ -29,17 +41,17 @@ const RedirectUrls = ({ client }: RedirectUrlsProps) => {
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    updateUrls([...client.redirect_uris, trimmedUrl], () => setIsAdding(false))
+    updateUrls([...urls, trimmedUrl], () => setIsAdding(false))
   }
 
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg">Redirect URLs</h2>
+        <h2 className="text-lg">{title}</h2>
         <Button
           variant="outline"
           size="icon-sm"
-          aria-label="Add redirect URL"
+          aria-label={`Add ${label}`}
           disabled={isAdding}
           onClick={() => {
             mutation.reset()
@@ -51,26 +63,22 @@ const RedirectUrls = ({ client }: RedirectUrlsProps) => {
         </Button>
       </div>
       <ul className="flex flex-col divide-y divide-border border border-border">
-        {client.redirect_uris.map((uri) => (
+        {urls.map((uri) => (
           <li
             key={uri}
             className="flex items-center justify-between gap-4 px-3 py-2 text-sm"
           >
             <span className="break-all">{uri}</span>
             <div className="flex items-center gap-1">
-              <CopyButton value={uri} label={`Copy redirect URL ${uri}`} />
+              <CopyButton value={uri} label={`Copy ${label} ${uri}`} />
               <Button
                 variant="ghost"
                 size="xs"
                 className="text-muted-foreground"
-                aria-label={`Remove redirect URL ${uri}`}
-                disabled={
-                  client.redirect_uris.length === 1 || mutation.isPending
-                }
+                aria-label={`Remove ${label} ${uri}`}
+                disabled={urls.length === 1 || mutation.isPending}
                 onClick={() =>
-                  updateUrls(
-                    client.redirect_uris.filter((current) => current !== uri)
-                  )
+                  updateUrls(urls.filter((current) => current !== uri))
                 }
               >
                 Remove
@@ -78,15 +86,20 @@ const RedirectUrls = ({ client }: RedirectUrlsProps) => {
             </div>
           </li>
         ))}
+        {urls.length === 0 && !isAdding && (
+          <li className="px-3 py-2 text-sm text-muted-foreground">
+            No URLs registered.
+          </li>
+        )}
         {isAdding && (
           <li className="px-3 py-2">
             <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
               <div className="flex items-center gap-2">
                 <Input
                   type="url"
-                  name="redirect_uri"
-                  aria-label="New redirect URL"
-                  placeholder="https://app.example.com/auth/callback"
+                  name={field}
+                  aria-label={`New ${label}`}
+                  placeholder={placeholder}
                   autoFocus
                   value={url}
                   onChange={(event) => setUrl(event.target.value)}
@@ -107,9 +120,7 @@ const RedirectUrls = ({ client }: RedirectUrlsProps) => {
                 </Button>
               </div>
               {isDuplicate && (
-                <FieldError>
-                  This redirect URL is already registered.
-                </FieldError>
+                <FieldError>This URL is already registered.</FieldError>
               )}
               {mutation.isError && (
                 <FieldError>{mutation.error.message}</FieldError>
@@ -125,4 +136,4 @@ const RedirectUrls = ({ client }: RedirectUrlsProps) => {
   )
 }
 
-export default RedirectUrls
+export default ClientUrls

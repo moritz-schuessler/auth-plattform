@@ -12,7 +12,7 @@ import ClientCredentials from "./-components/client-credentials"
 import ClientNameForm from "./-components/client-name-form"
 import ClientSecretCard from "./-components/client-secret-card"
 import DeleteClientDialog from "./-components/delete-client-dialog"
-import RedirectUrls from "./-components/redirect-urls"
+import ClientUrls from "./-components/client-urls"
 import useClientSecret from "./-hooks/use-client-secret"
 import { auth } from "@/lib/auth/server/auth"
 
@@ -31,6 +31,7 @@ const getOAuthClient = createServerFn({ method: "GET" })
         client_id: client.client_id,
         client_name: client.client_name ?? null,
         redirect_uris: client.redirect_uris,
+        post_logout_redirect_uris: client.post_logout_redirect_uris ?? [],
         public: client.public ?? false,
       }
     } catch {
@@ -86,7 +87,24 @@ function RouteComponent() {
         <ClientCredentials client={client} />
       </section>
       <Separator />
-      <RedirectUrls client={client} />
+      <div className="grid grid-cols-2 items-start gap-6">
+        <ClientUrls
+          clientId={client.client_id}
+          field="redirect_uris"
+          urls={client.redirect_uris}
+          title="Redirect URLs"
+          label="redirect URL"
+          placeholder="https://app.example.com/auth/callback"
+        />
+        <ClientUrls
+          clientId={client.client_id}
+          field="post_logout_redirect_uris"
+          urls={client.post_logout_redirect_uris}
+          title="Post-logout Redirect URLs"
+          label="post-logout redirect URL"
+          placeholder="https://app.example.com"
+        />
+      </div>
       <Separator />
       <section className="flex flex-col gap-3">
         <h2 className="text-lg">Danger zone</h2>
