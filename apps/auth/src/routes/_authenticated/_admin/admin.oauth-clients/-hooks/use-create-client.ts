@@ -1,12 +1,14 @@
 import { useMutation } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { createClientSchema } from "../-schemas/create-client"
 import useClientSecret from "./use-client-secret"
+import type { CreateClientInput } from "../-schemas/create-client"
 import { auth } from "@/lib/auth/server/auth"
 import { requireAdmin } from "@/lib/auth/server/guards"
 
 const createOAuthClient = createServerFn({ method: "POST" })
-  .inputValidator((data: { client_name: string; redirect_uri: string }) => data)
+  .inputValidator(createClientSchema)
   .handler(async ({ data }) => {
     await requireAdmin()
 
@@ -31,7 +33,7 @@ const useCreateClient = () => {
   const { setClientSecret } = useClientSecret()
 
   return useMutation({
-    mutationFn: async (data: { client_name: string; redirect_uri: string }) => {
+    mutationFn: async (data: CreateClientInput) => {
       const client = await createOAuthClient({ data })
 
       return { ...client, client_name: data.client_name }
