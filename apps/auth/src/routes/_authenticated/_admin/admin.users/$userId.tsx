@@ -7,6 +7,7 @@ import { Button } from "@auth-plattform/ui/components/button"
 import { Separator } from "@auth-plattform/ui/components/separator"
 import UserDangerZone from "./-components/user-danger-zone"
 import UserGeneralForm from "./-components/user-general-form"
+import UserRole from "./-components/user-role"
 import { auth } from "@/lib/auth/server/auth"
 import db from "@/data/db"
 import { oauthClient } from "@/data/schema"
@@ -81,6 +82,11 @@ function RouteComponent() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg">General</h2>
         <UserGeneralForm key={user.id} user={user} />
+      </section>
+      <Separator />
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg">Role</h2>
+        <UserRole user={user} isCurrentUser={user.id === currentUser.id} />
       </section>
       <Separator />
       <section className="flex flex-col gap-3">
