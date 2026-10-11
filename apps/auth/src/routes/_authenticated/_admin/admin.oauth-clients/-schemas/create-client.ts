@@ -1,8 +1,15 @@
 import { z } from "zod"
 
-const loopbackHosts = ["localhost", "127.0.0.1", "[::1]"]
+const isLoopbackHost = (hostname: string) => {
+  const host = hostname.replace(/^\[|\]$/g, "").replace(/\.$/, "")
 
-const forbiddenProtocols = ["javascript:", "data:", "vbscript:"]
+  return (
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host === "::1" ||
+    /^127(\.\d{1,3}){3}$/.test(host)
+  )
+}
 
 const getUrlError = (value: string) => {
   if (!URL.canParse(value)) {
@@ -11,15 +18,15 @@ const getUrlError = (value: string) => {
 
   const url = new URL(value)
 
-  if (forbiddenProtocols.includes(url.protocol)) {
-    return "This URL scheme isn't allowed."
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    return "The URL must start with https:// (or http:// for localhost)."
   }
 
   if (value.includes("#")) {
     return "The URL must not contain a fragment (#)."
   }
 
-  if (url.protocol === "http:" && !loopbackHosts.includes(url.hostname)) {
+  if (url.protocol === "http:" && !isLoopbackHost(url.hostname)) {
     return "Use HTTPS. HTTP is only allowed for localhost."
   }
 
@@ -34,12 +41,14 @@ const validateUrl = (value: string, context: z.RefinementCtx) => {
   }
 }
 
+const clientNameSchema = z
+  .string()
+  .trim()
+  .min(1, "Enter an application name.")
+  .max(100, "Use at most 100 characters.")
+
 const createClientSchema = z.object({
-  client_name: z
-    .string()
-    .trim()
-    .min(1, "Enter an application name.")
-    .max(100, "Use at most 100 characters."),
+  client_name: clientNameSchema,
   redirect_uri: z
     .string()
     .trim()
@@ -50,5 +59,5 @@ const createClientSchema = z.object({
 
 type CreateClientInput = z.infer<typeof createClientSchema>
 
-export { createClientSchema }
+export { clientNameSchema, createClientSchema, getUrlError }
 export type { CreateClientInput }

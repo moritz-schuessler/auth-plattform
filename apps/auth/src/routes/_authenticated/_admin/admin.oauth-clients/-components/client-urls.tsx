@@ -5,6 +5,7 @@ import { Button } from "@auth-plattform/ui/components/button"
 import { FieldError } from "@auth-plattform/ui/components/field"
 import { Input } from "@auth-plattform/ui/components/input"
 import useUpdateClient from "../-hooks/use-update-client"
+import { getUrlError } from "../-schemas/create-client"
 import CopyButton from "./copy-button"
 
 interface ClientUrlsProps {
@@ -26,6 +27,7 @@ const ClientUrls = ({
 }: ClientUrlsProps) => {
   const [isAdding, setIsAdding] = useState(false)
   const [url, setUrl] = useState("")
+  const [urlError, setUrlError] = useState<string | null>(null)
   const mutation = useUpdateClient()
 
   const trimmedUrl = url.trim()
@@ -40,6 +42,13 @@ const ClientUrls = ({
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    const error = getUrlError(trimmedUrl)
+
+    if (error) {
+      setUrlError(error)
+      return
+    }
 
     updateUrls([...urls, trimmedUrl], () => setIsAdding(false))
   }
@@ -56,6 +65,7 @@ const ClientUrls = ({
           onClick={() => {
             mutation.reset()
             setUrl("")
+            setUrlError(null)
             setIsAdding(true)
           }}
         >
@@ -93,7 +103,11 @@ const ClientUrls = ({
         )}
         {isAdding && (
           <li className="px-3 py-2">
-            <form className="flex flex-col gap-1" onSubmit={handleSubmit}>
+            <form
+              className="flex flex-col gap-1"
+              noValidate
+              onSubmit={handleSubmit}
+            >
               <div className="flex items-center gap-2">
                 <Input
                   type="url"
@@ -102,7 +116,10 @@ const ClientUrls = ({
                   placeholder={placeholder}
                   autoFocus
                   value={url}
-                  onChange={(event) => setUrl(event.target.value)}
+                  onChange={(event) => {
+                    setUrl(event.target.value)
+                    setUrlError(null)
+                  }}
                 />
                 <Button
                   type="submit"
@@ -122,6 +139,7 @@ const ClientUrls = ({
               {isDuplicate && (
                 <FieldError>This URL is already registered.</FieldError>
               )}
+              {urlError && <FieldError>{urlError}</FieldError>}
               {mutation.isError && (
                 <FieldError>{mutation.error.message}</FieldError>
               )}
