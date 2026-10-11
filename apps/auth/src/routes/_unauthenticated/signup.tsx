@@ -1,9 +1,12 @@
 import { useCallback } from "react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
+import { createServerFn } from "@tanstack/react-start"
+import { z } from "zod"
 
 import {
   Field,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@auth-plattform/ui/components/field"
@@ -12,6 +15,50 @@ import { Button, buttonVariants } from "@auth-plattform/ui/components/button"
 import { cn } from "@auth-plattform/ui/lib/utils"
 
 import { authClient } from "@/lib/auth/client/auth-client"
+import { auth } from "@/lib/auth/server/auth"
+
+const registerSchema = z.object({
+  email: z.string().trim().toLowerCase().pipe(z.email()),
+  password: z.string(),
+})
+
+const register = createServerFn({ method: "POST" })
+  .inputValidator(registerSchema)
+  .handler(async ({ data }) => {
+    const context = await auth.$context
+    const { minPasswordLength, maxPasswordLength } = context.password.config
+
+    if (data.password.length < minPasswordLength) {
+      throw new Error(
+        `Use a password with at least ${minPasswordLength} characters.`
+      )
+    }
+
+    if (data.password.length > maxPasswordLength) {
+      throw new Error(
+        `Use a password with at most ${maxPasswordLength} characters.`
+      )
+    }
+
+    const password = await context.password.hash(data.password)
+    const found = await context.internalAdapter.findUserByEmail(data.email, {
+      includeAccounts: true,
+    })
+
+    if (
+      !found ||
+      found.accounts.some((account) => account.providerId === "credential")
+    ) {
+      throw new Error("This email can't be used to create an account.")
+    }
+
+    await context.internalAdapter.linkAccount({
+      userId: found.user.id,
+      accountId: found.user.id,
+      providerId: "credential",
+      password,
+    })
+  })
 
 export const Route = createFileRoute("/_unauthenticated/signup")({
   component: RouteComponent,
@@ -20,8 +67,9 @@ export const Route = createFileRoute("/_unauthenticated/signup")({
 function RouteComponent() {
   const mutation = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
-      const response = await authClient.signUp.email({
-        name: "",
+      await register({ data })
+
+      const response = await authClient.signIn.email({
         email: data.email,
         password: data.password,
       })
@@ -33,9 +81,8 @@ function RouteComponent() {
       return response
     },
     onSuccess: (response) => {
-      const data = response.data as unknown as { url?: string }
-      if (data.url) {
-        window.location.href = data.url
+      if (response.data.url) {
+        window.location.href = response.data.url
         return
       }
 
@@ -76,8 +123,16 @@ function RouteComponent() {
                 <Input name="password" type="password" required />
               </FieldGroup>
             </Field>
+            {mutation.isError && (
+              <FieldError>{mutation.error.message}</FieldError>
+            )}
           </div>
-          <Button type="submit" variant="default" className="flex w-full">
+          <Button
+            type="submit"
+            variant="default"
+            className="flex w-full"
+            disabled={mutation.isPending}
+          >
             Sign Up
           </Button>
         </form>
