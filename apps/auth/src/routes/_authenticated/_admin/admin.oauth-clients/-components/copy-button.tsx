@@ -1,19 +1,29 @@
 import { Button } from "@auth-plattform/ui/components/button"
+import type { ComponentProps } from "react"
 import useCopyToClipboard from "@/hooks/use-copy-to-clipboard"
 
-interface CopyButtonProps {
+type CopyButtonProps = Pick<
+  ComponentProps<typeof Button>,
+  "variant" | "size" | "className"
+> & {
   value: string
   label: string
 }
 
-const CopyButton = ({ value, label }: CopyButtonProps) => {
+const CopyButton = ({
+  value,
+  label,
+  variant = "ghost",
+  size = "xs",
+  className = "w-14 text-muted-foreground",
+}: CopyButtonProps) => {
   const { copied, copy } = useCopyToClipboard(value)
 
   return (
     <Button
-      variant="ghost"
-      size="xs"
-      className="w-14 text-muted-foreground"
+      variant={variant}
+      size={size}
+      className={className}
       aria-label={label}
       onClick={copy}
     >
