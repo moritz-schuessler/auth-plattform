@@ -15,8 +15,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as UnauthenticatedSignupRouteImport } from './routes/_unauthenticated/signup'
 import { Route as UnauthenticatedLoginRouteImport } from './routes/_unauthenticated/login'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/_admin/route'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as AuthenticatedAdminAdminOauthClientsRouteRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/route'
@@ -55,15 +55,16 @@ const UnauthenticatedLoginRoute = UnauthenticatedLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => UnauthenticatedRouteRoute,
 } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   id: '/_admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
@@ -126,10 +127,10 @@ const apiDotwellKnownOauthAuthorizationServerApiAuthRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/login': typeof UnauthenticatedLoginRoute
   '/signup': typeof UnauthenticatedSignupRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
@@ -142,10 +143,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
   '/login': typeof UnauthenticatedLoginRoute
   '/signup': typeof UnauthenticatedSignupRoute
   '/account': typeof AuthenticatedAccountIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/api/auth/$': typeof apiApiAuthSplatRoute
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/admin/oauth-clients/$clientId': typeof AuthenticatedAdminAdminOauthClientsClientIdRoute
@@ -161,11 +162,11 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteRouteWithChildren
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_unauthenticated/login': typeof UnauthenticatedLoginRoute
   '/_unauthenticated/signup': typeof UnauthenticatedSignupRoute
   '/_public/': typeof PublicIndexRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/_admin/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
   '/(api)/api/auth/$': typeof apiApiAuthSplatRoute
   '/(api)/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
@@ -180,10 +181,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/login'
     | '/signup'
     | '/account/'
+    | '/dashboard/'
     | '/admin/oauth-clients'
     | '/api/auth/$'
     | '/.well-known/oauth-authorization-server/api/auth'
@@ -196,10 +197,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/login'
     | '/signup'
     | '/account'
+    | '/dashboard'
     | '/api/auth/$'
     | '/.well-known/oauth-authorization-server/api/auth'
     | '/admin/oauth-clients/$clientId'
@@ -214,11 +215,11 @@ export interface FileRouteTypes {
     | '/_public'
     | '/_unauthenticated'
     | '/_authenticated/_admin'
-    | '/_authenticated/dashboard'
     | '/_unauthenticated/login'
     | '/_unauthenticated/signup'
     | '/_public/'
     | '/_authenticated/account/'
+    | '/_authenticated/dashboard/'
     | '/_authenticated/_admin/admin/oauth-clients'
     | '/(api)/api/auth/$'
     | '/(api)/.well-known/oauth-authorization-server/api/auth'
@@ -282,18 +283,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedLoginRouteImport
       parentRoute: typeof UnauthenticatedRouteRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/_admin': {
       id: '/_authenticated/_admin'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/account/': {
@@ -415,14 +416,14 @@ const AuthenticatedAdminRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
+  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
