@@ -48,6 +48,22 @@ const AppNavigation = ({ children, isAdmin }: AppNavigationProps) => {
                     </Link>
                   }
                 />
+                <div>
+                  <Button
+                    variant="link"
+                    nativeButton={false}
+                    render={
+                      <Link
+                        to="/account"
+                        activeProps={{
+                          className: "text-primary",
+                        }}
+                      >
+                        Account
+                      </Link>
+                    }
+                  />
+                </div>
               </div>
             </div>
 
