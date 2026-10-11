@@ -39,6 +39,7 @@ interface User {
   email: string
   role?: string
   banned: boolean | null
+  invited: boolean
   createdAt: Date
   oauthClients: Array<{ clientId: string; name: string | null }>
 }
@@ -136,12 +137,17 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
     columnHelper.display({
       id: "status",
       header: "Status",
-      cell: ({ row }) =>
-        row.original.banned ? (
-          <Badge variant="destructive">Banned</Badge>
-        ) : (
-          <span className="text-muted-foreground">Active</span>
-        ),
+      cell: ({ row }) => {
+        if (row.original.banned) {
+          return <Badge variant="destructive">Banned</Badge>
+        }
+
+        if (row.original.invited) {
+          return <Badge variant="outline">Invited</Badge>
+        }
+
+        return <span className="text-muted-foreground">Active</span>
+      },
     }),
     columnHelper.display({
       id: "oauth_clients",
