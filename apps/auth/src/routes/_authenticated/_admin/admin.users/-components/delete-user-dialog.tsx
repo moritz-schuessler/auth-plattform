@@ -13,7 +13,12 @@ import {
 import useDeleteUser from "../-hooks/use-delete-user"
 
 interface DeleteUserDialogProps {
-  user: { id: string; name: string; email: string; oauthClientCount: number }
+  user: {
+    id: string
+    name: string
+    email: string
+    oauthClients: Array<{ clientId: string; name: string | null }>
+  }
   trigger: React.ReactElement
   onDeleted: () => void | Promise<void>
 }
@@ -58,14 +63,24 @@ const DeleteUserDialog = ({
           <AlertDialogDescription>
             This can't be undone. The account, its sessions and its access to
             every connected application are removed.
-            {user.oauthClientCount > 0 &&
-              ` This also deletes ${user.oauthClientCount} OAuth ${
-                user.oauthClientCount === 1 ? "client" : "clients"
-              } owned by this user. Every application using ${
-                user.oauthClientCount === 1 ? "it" : "them"
-              } stops working immediately.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {user.oauthClients.length > 0 && (
+          <div className="flex flex-col gap-2 text-sm">
+            <p>
+              This also deletes the OAuth{" "}
+              {user.oauthClients.length === 1 ? "client" : "clients"} owned by
+              this user. Every application using{" "}
+              {user.oauthClients.length === 1 ? "it" : "them"} stops working
+              immediately:
+            </p>
+            <ul className="list-inside list-disc font-medium">
+              {user.oauthClients.map((client) => (
+                <li key={client.clientId}>{client.name ?? client.clientId}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         {mutation.isError && (
           <p className="text-sm text-destructive">{mutation.error.message}</p>
         )}

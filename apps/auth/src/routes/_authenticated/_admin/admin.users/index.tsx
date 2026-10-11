@@ -1,16 +1,47 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { asc, inArray } from "drizzle-orm"
 import UserTable from "./-components/user-table"
 import { auth } from "@/lib/auth/server/auth"
+import db from "@/data/db"
+import { oauthClient } from "@/data/schema"
 
 const listUsers = createServerFn({ method: "GET" }).handler(async () => {
   const headers = getRequestHeaders()
 
-  return await auth.api.listUsers({
+  const { users, total } = await auth.api.listUsers({
     headers,
     query: {},
   })
+
+  const oauthClients =
+    users.length > 0
+      ? await db
+          .select({
+            clientId: oauthClient.clientId,
+            name: oauthClient.name,
+            userId: oauthClient.userId,
+          })
+          .from(oauthClient)
+          .where(
+            inArray(
+              oauthClient.userId,
+              users.map((user) => user.id)
+            )
+          )
+          .orderBy(asc(oauthClient.name))
+      : []
+
+  return {
+    users: users.map((user) => ({
+      ...user,
+      oauthClients: oauthClients
+        .filter((client) => client.userId === user.id)
+        .map(({ clientId, name }) => ({ clientId, name })),
+    })),
+    total,
+  }
 })
 
 export const Route = createFileRoute("/_authenticated/_admin/admin/users/")({

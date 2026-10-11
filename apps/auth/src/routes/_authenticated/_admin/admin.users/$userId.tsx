@@ -1,12 +1,13 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { count, eq } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 import { Badge } from "@auth-plattform/ui/components/badge"
 import { Button } from "@auth-plattform/ui/components/button"
 import { Separator } from "@auth-plattform/ui/components/separator"
 import UserDangerZone from "./-components/user-danger-zone"
 import UserGeneralForm from "./-components/user-general-form"
+import UserOAuthClients from "./-components/user-oauth-clients"
 import UserRole from "./-components/user-role"
 import { auth } from "@/lib/auth/server/auth"
 import db from "@/data/db"
@@ -23,10 +24,11 @@ const getUser = createServerFn({ method: "GET" })
         query: { id: userId },
       })
 
-      const [{ oauthClientCount }] = await db
-        .select({ oauthClientCount: count() })
+      const oauthClients = await db
+        .select({ clientId: oauthClient.clientId, name: oauthClient.name })
         .from(oauthClient)
         .where(eq(oauthClient.userId, user.id))
+        .orderBy(asc(oauthClient.name))
 
       return {
         id: user.id,
@@ -36,7 +38,7 @@ const getUser = createServerFn({ method: "GET" })
         banned: user.banned ?? false,
         banReason: user.banReason ?? null,
         banExpires: user.banExpires ?? null,
-        oauthClientCount,
+        oauthClients,
       }
     } catch {
       return null
@@ -87,6 +89,11 @@ function RouteComponent() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg">Role</h2>
         <UserRole user={user} isCurrentUser={user.id === currentUser.id} />
+      </section>
+      <Separator />
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg">OAuth clients</h2>
+        <UserOAuthClients clients={user.oauthClients} />
       </section>
       <Separator />
       <section className="flex flex-col gap-3">

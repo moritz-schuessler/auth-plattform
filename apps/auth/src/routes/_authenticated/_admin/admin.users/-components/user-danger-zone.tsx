@@ -12,7 +12,7 @@ interface UserDangerZoneProps {
     banned: boolean
     banReason: string | null
     banExpires: Date | null
-    oauthClientCount: number
+    oauthClients: Array<{ clientId: string; name: string | null }>
   }
   isCurrentUser: boolean
 }
@@ -80,9 +80,9 @@ const UserDangerZone = ({ user, isCurrentUser }: UserDangerZoneProps) => {
       <div className="flex items-center justify-between gap-4">
         <span className="text-muted-foreground">
           Deleting a user can't be undone.
-          {user.oauthClientCount > 0 &&
-            ` It also deletes the ${user.oauthClientCount} OAuth ${
-              user.oauthClientCount === 1 ? "client" : "clients"
+          {user.oauthClients.length > 0 &&
+            ` It also deletes the ${user.oauthClients.length} OAuth ${
+              user.oauthClients.length === 1 ? "client" : "clients"
             } owned by this user.`}
         </span>
         <DeleteUserDialog

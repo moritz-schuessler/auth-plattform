@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { Link } from "@tanstack/react-router"
 import {
   columnFilteringFeature,
@@ -40,6 +40,7 @@ interface User {
   role?: string
   banned: boolean | null
   createdAt: Date
+  oauthClients: Array<{ clientId: string; name: string | null }>
 }
 
 interface UserTableProps {
@@ -48,6 +49,8 @@ interface UserTableProps {
 }
 
 const getName = (user: User) => user.name.trim() || user.email
+
+const getPanelId = (user: User) => `user-panel-${user.id}`
 
 const isAdmin = (user: User) => user.role?.split(",").includes("admin") ?? false
 
@@ -92,6 +95,13 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "created", desc: true },
   ])
+  const [expanded, setExpanded] = useState<Record<string, boolean | undefined>>(
+    {}
+  )
+
+  const toggleExpanded = (userId: string) => {
+    setExpanded((current) => ({ ...current, [userId]: !current[userId] }))
+  }
 
   const columns = columnHelper.columns([
     columnHelper.accessor(getName, {
@@ -132,6 +142,41 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
         ) : (
           <span className="text-muted-foreground">Active</span>
         ),
+    }),
+    columnHelper.display({
+      id: "oauth_clients",
+      header: "OAuth clients",
+      cell: ({ row }) => {
+        const user = row.original
+        const isExpanded = expanded[user.id] ?? false
+
+        if (user.oauthClients.length === 0) {
+          return <span className="text-muted-foreground">–</span>
+        }
+
+        return (
+          <Button
+            variant="ghost"
+            size="xs"
+            className="text-muted-foreground"
+            aria-expanded={isExpanded}
+            aria-controls={getPanelId(user)}
+            onClick={() => toggleExpanded(user.id)}
+          >
+            <span
+              aria-hidden="true"
+              className={cn(
+                "inline-block transition-transform duration-150 ease-out motion-reduce:transition-none",
+                isExpanded && "rotate-90"
+              )}
+            >
+              ›
+            </span>
+            {user.oauthClients.length}{" "}
+            {user.oauthClients.length === 1 ? "client" : "clients"}
+          </Button>
+        )
+      },
     }),
     columnHelper.accessor((user) => user.createdAt.getTime(), {
       id: "created",
@@ -253,19 +298,50 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
           </TableHeader>
           <TableBody>
             {rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={cn(row.original.banned && "text-muted-foreground")}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={columnClassNames[cell.column.id]}
+              <Fragment key={row.id}>
+                <TableRow
+                  className={cn(row.original.banned && "text-muted-foreground")}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={columnClassNames[cell.column.id]}
+                    >
+                      <table.FlexRender cell={cell} />
+                    </TableCell>
+                  ))}
+                </TableRow>
+                {expanded[row.original.id] && (
+                  <TableRow
+                    id={getPanelId(row.original)}
+                    className="bg-muted/30 hover:bg-muted/30"
                   >
-                    <table.FlexRender cell={cell} />
-                  </TableCell>
-                ))}
-              </TableRow>
+                    <TableCell
+                      colSpan={columnCount}
+                      className="whitespace-normal"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs text-muted-foreground">
+                          OAuth clients
+                        </span>
+                        <ul className="flex flex-col gap-1">
+                          {row.original.oauthClients.map((client) => (
+                            <li
+                              key={client.clientId}
+                              className="flex items-center gap-3"
+                            >
+                              {client.name ?? client.clientId}
+                              <code className="font-mono text-xs text-muted-foreground">
+                                {client.clientId}
+                              </code>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </Fragment>
             ))}
             {users.length === 0 && (
               <TableRow className="hover:bg-transparent">
