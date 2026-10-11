@@ -12,7 +12,7 @@ const listUsers = createServerFn({ method: "GET" }).handler(async () => {
   })
 })
 
-export const Route = createFileRoute("/_authenticated/_admin/admin")({
+export const Route = createFileRoute("/_authenticated/_admin/admin/users/")({
   loader: async () => {
     return await listUsers()
   },
@@ -24,7 +24,7 @@ function RouteComponent() {
 
   return (
     <main className="flex w-full flex-col gap-4 p-4">
-      <h1 className="text-2xl">Admin</h1>
+      <h1 className="text-2xl">Users</h1>
       <ul>
         {users.map((user) => (
           <li key={user.id}>{user.email}</li>
