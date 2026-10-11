@@ -21,6 +21,7 @@ import { Route as apiApiAuthSplatRouteImport } from './routes/(api)/api/auth/$'
 import { Route as AuthenticatedAdminAdminOauthClientsRouteRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/route'
 import { Route as AuthenticatedAdminAdminUsersIndexRouteImport } from './routes/_authenticated/_admin/admin.users/index'
 import { Route as AuthenticatedAdminAdminOauthClientsIndexRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/index'
+import { Route as AuthenticatedAdminAdminUsersUserIdRouteImport } from './routes/_authenticated/_admin/admin.users/$userId'
 import { Route as AuthenticatedAdminAdminOauthClientsNewRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/new'
 import { Route as AuthenticatedAdminAdminOauthClientsClientIdRouteImport } from './routes/_authenticated/_admin/admin.oauth-clients/$clientId'
 import { Route as apiDotwellKnownOauthAuthorizationServerApiAuthRouteImport } from './routes/(api)/[.]well-known.oauth-authorization-server.api.auth'
@@ -84,6 +85,12 @@ const AuthenticatedAdminAdminOauthClientsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAdminAdminOauthClientsRouteRoute,
   } as any)
+const AuthenticatedAdminAdminUsersUserIdRoute =
+  AuthenticatedAdminAdminUsersUserIdRouteImport.update({
+    id: '/admin/users/$userId',
+    path: '/admin/users/$userId',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAdminOauthClientsNewRoute =
   AuthenticatedAdminAdminOauthClientsNewRouteImport.update({
     id: '/new',
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/admin/oauth-clients/$clientId': typeof AuthenticatedAdminAdminOauthClientsClientIdRoute
   '/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
+  '/admin/users/$userId': typeof AuthenticatedAdminAdminUsersUserIdRoute
   '/admin/oauth-clients/': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/admin/users/': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -125,6 +133,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/admin/oauth-clients/$clientId': typeof AuthenticatedAdminAdminOauthClientsClientIdRoute
   '/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
+  '/admin/users/$userId': typeof AuthenticatedAdminAdminUsersUserIdRoute
   '/admin/oauth-clients': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/(api)/.well-known/oauth-authorization-server/api/auth': typeof apiDotwellKnownOauthAuthorizationServerApiAuthRoute
   '/_authenticated/_admin/admin/oauth-clients/$clientId': typeof AuthenticatedAdminAdminOauthClientsClientIdRoute
   '/_authenticated/_admin/admin/oauth-clients/new': typeof AuthenticatedAdminAdminOauthClientsNewRoute
+  '/_authenticated/_admin/admin/users/$userId': typeof AuthenticatedAdminAdminUsersUserIdRoute
   '/_authenticated/_admin/admin/oauth-clients/': typeof AuthenticatedAdminAdminOauthClientsIndexRoute
   '/_authenticated/_admin/admin/users/': typeof AuthenticatedAdminAdminUsersIndexRoute
 }
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-authorization-server/api/auth'
     | '/admin/oauth-clients/$clientId'
     | '/admin/oauth-clients/new'
+    | '/admin/users/$userId'
     | '/admin/oauth-clients/'
     | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-authorization-server/api/auth'
     | '/admin/oauth-clients/$clientId'
     | '/admin/oauth-clients/new'
+    | '/admin/users/$userId'
     | '/admin/oauth-clients'
     | '/admin/users'
   id:
@@ -187,6 +199,7 @@ export interface FileRouteTypes {
     | '/(api)/.well-known/oauth-authorization-server/api/auth'
     | '/_authenticated/_admin/admin/oauth-clients/$clientId'
     | '/_authenticated/_admin/admin/oauth-clients/new'
+    | '/_authenticated/_admin/admin/users/$userId'
     | '/_authenticated/_admin/admin/oauth-clients/'
     | '/_authenticated/_admin/admin/users/'
   fileRoutesById: FileRoutesById
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminOauthClientsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRoute
     }
+    '/_authenticated/_admin/admin/users/$userId': {
+      id: '/_authenticated/_admin/admin/users/$userId'
+      path: '/admin/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AuthenticatedAdminAdminUsersUserIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/_admin/admin/oauth-clients/new': {
       id: '/_authenticated/_admin/admin/oauth-clients/new'
       path: '/new'
@@ -332,6 +352,7 @@ const AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren =
 
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAdminOauthClientsRouteRoute: typeof AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren
+  AuthenticatedAdminAdminUsersUserIdRoute: typeof AuthenticatedAdminAdminUsersUserIdRoute
   AuthenticatedAdminAdminUsersIndexRoute: typeof AuthenticatedAdminAdminUsersIndexRoute
 }
 
@@ -339,6 +360,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
   {
     AuthenticatedAdminAdminOauthClientsRouteRoute:
       AuthenticatedAdminAdminOauthClientsRouteRouteWithChildren,
+    AuthenticatedAdminAdminUsersUserIdRoute:
+      AuthenticatedAdminAdminUsersUserIdRoute,
     AuthenticatedAdminAdminUsersIndexRoute:
       AuthenticatedAdminAdminUsersIndexRoute,
   }

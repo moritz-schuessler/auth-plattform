@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "@tanstack/react-router"
 import {
   columnFilteringFeature,
   columnVisibilityFeature,
@@ -77,6 +78,7 @@ const columnHelper = createColumnHelper<typeof features, User>()
 
 const columnClassNames: Record<string, string | undefined> = {
   name: "w-full max-w-0",
+  actions: "text-right",
 }
 
 const sortFields = {
@@ -135,6 +137,28 @@ const UserTable = ({ users, currentUserId }: UserTableProps) => {
       id: "created",
       header: "Created",
       cell: ({ row }) => dateFormatter.format(row.original.createdAt),
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: () => <span className="sr-only">Actions</span>,
+      cell: ({ row }) => (
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            size="xs"
+            nativeButton={false}
+            aria-label={`Edit ${getName(row.original)}`}
+            render={
+              <Link
+                to="/admin/users/$userId"
+                params={{ userId: row.original.id }}
+              >
+                Edit
+              </Link>
+            }
+          />
+        </div>
+      ),
     }),
   ])
 
