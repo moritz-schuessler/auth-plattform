@@ -1,14 +1,14 @@
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
-import { asc, inArray } from "drizzle-orm"
+import { and, asc, eq, inArray } from "drizzle-orm"
 import { Plus } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@auth-plattform/ui/components/button"
 import UserTable from "./-components/user-table"
 import { auth } from "@/lib/auth/server/auth"
 import db from "@/data/db"
-import { oauthClient } from "@/data/schema"
+import { account, oauthClient } from "@/data/schema"
 
 const listUsers = createServerFn({ method: "GET" }).handler(async () => {
   const headers = getRequestHeaders()
@@ -17,6 +17,25 @@ const listUsers = createServerFn({ method: "GET" }).handler(async () => {
     headers,
     query: {},
   })
+
+  const userIds = users.map((user) => user.id)
+
+  const credentialAccounts =
+    users.length > 0
+      ? await db
+          .select({ userId: account.userId })
+          .from(account)
+          .where(
+            and(
+              eq(account.providerId, "credential"),
+              inArray(account.userId, userIds)
+            )
+          )
+      : []
+
+  const registeredUserIds = new Set(
+    credentialAccounts.map(({ userId }) => userId)
+  )
 
   const oauthClients =
     users.length > 0
@@ -27,18 +46,14 @@ const listUsers = createServerFn({ method: "GET" }).handler(async () => {
             userId: oauthClient.userId,
           })
           .from(oauthClient)
-          .where(
-            inArray(
-              oauthClient.userId,
-              users.map((user) => user.id)
-            )
-          )
+          .where(inArray(oauthClient.userId, userIds))
           .orderBy(asc(oauthClient.name))
       : []
 
   return {
     users: users.map((user) => ({
       ...user,
+      invited: !registeredUserIds.has(user.id),
       oauthClients: oauthClients
         .filter((client) => client.userId === user.id)
         .map(({ clientId, name }) => ({ clientId, name })),
