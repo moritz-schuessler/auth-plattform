@@ -1,10 +1,15 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
+import { count, eq } from "drizzle-orm"
 import { Badge } from "@auth-plattform/ui/components/badge"
 import { Button } from "@auth-plattform/ui/components/button"
+import { Separator } from "@auth-plattform/ui/components/separator"
+import UserDangerZone from "./-components/user-danger-zone"
 import UserGeneralForm from "./-components/user-general-form"
 import { auth } from "@/lib/auth/server/auth"
+import db from "@/data/db"
+import { oauthClient } from "@/data/schema"
 
 const getUser = createServerFn({ method: "GET" })
   .inputValidator((userId: string) => userId)
@@ -17,12 +22,20 @@ const getUser = createServerFn({ method: "GET" })
         query: { id: userId },
       })
 
+      const [{ oauthClientCount }] = await db
+        .select({ oauthClientCount: count() })
+        .from(oauthClient)
+        .where(eq(oauthClient.userId, user.id))
+
       return {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role ?? null,
         banned: user.banned ?? false,
+        banReason: user.banReason ?? null,
+        banExpires: user.banExpires ?? null,
+        oauthClientCount,
       }
     } catch {
       return null
@@ -68,6 +81,14 @@ function RouteComponent() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg">General</h2>
         <UserGeneralForm key={user.id} user={user} />
+      </section>
+      <Separator />
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg">Danger zone</h2>
+        <UserDangerZone
+          user={user}
+          isCurrentUser={user.id === currentUser.id}
+        />
       </section>
     </main>
   )
