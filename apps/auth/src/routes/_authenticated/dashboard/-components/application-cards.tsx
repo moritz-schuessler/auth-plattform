@@ -13,11 +13,12 @@ interface Application {
   uri: string | null
   icon: string | null
   disabled: boolean | null
-  lastActiveAt: Date
+  lastActiveAt: Date | null
 }
 
 interface ApplicationCardsProps {
   applications: Array<Application>
+  emptyMessage: string
 }
 
 const getName = (application: Application) =>
@@ -60,22 +61,23 @@ const ApplicationCard = ({ application }: { application: Application }) => {
               <Badge variant="secondary">Disabled</Badge>
             )}
           </div>
-          <CardDescription>
-            Last active {dateFormatter.format(application.lastActiveAt)}
-          </CardDescription>
+          {application.lastActiveAt && (
+            <CardDescription>
+              Last active {dateFormatter.format(application.lastActiveAt)}
+            </CardDescription>
+          )}
         </div>
       </CardContent>
     </Card>
   )
 }
 
-const ApplicationCards = ({ applications }: ApplicationCardsProps) => {
+const ApplicationCards = ({
+  applications,
+  emptyMessage,
+}: ApplicationCardsProps) => {
   if (applications.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        You haven't signed in to any applications yet.
-      </p>
-    )
+    return <p className="text-sm text-muted-foreground">{emptyMessage}</p>
   }
 
   return (

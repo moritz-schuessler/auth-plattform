@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
-import { eq, inArray, max } from "drizzle-orm"
+import { asc, eq, max } from "drizzle-orm"
+import { Separator } from "@auth-plattform/ui/components/separator"
 import ApplicationCards from "./-components/application-cards"
 import { requireSession } from "@/lib/auth/server/guards"
 import db from "@/data/db"
@@ -41,10 +42,6 @@ const listApplications = createServerFn({ method: "GET" }).handler(async () => {
     }
   }
 
-  if (lastActiveByClient.size === 0) {
-    return []
-  }
-
   const clients = await db
     .select({
       clientId: oauthClient.clientId,
@@ -54,25 +51,34 @@ const listApplications = createServerFn({ method: "GET" }).handler(async () => {
       disabled: oauthClient.disabled,
     })
     .from(oauthClient)
-    .where(inArray(oauthClient.clientId, [...lastActiveByClient.keys()]))
+    .orderBy(asc(oauthClient.name))
 
-  return clients
-    .map((client) => ({
-      ...client,
-      lastActiveAt: lastActiveByClient.get(client.clientId)!,
-    }))
+  const used = clients
+    .flatMap((client) => {
+      const lastActiveAt = lastActiveByClient.get(client.clientId)
+
+      return lastActiveAt ? [{ ...client, lastActiveAt }] : []
+    })
     .sort((a, b) => b.lastActiveAt.getTime() - a.lastActiveAt.getTime())
+
+  const available = clients
+    .filter(
+      (client) => !client.disabled && !lastActiveByClient.has(client.clientId)
+    )
+    .map((client) => ({ ...client, lastActiveAt: null }))
+
+  return { used, available }
 })
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   loader: async () => {
-    return { applications: await listApplications() }
+    return await listApplications()
   },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { applications } = Route.useLoaderData()
+  const { used, available } = Route.useLoaderData()
 
   return (
     <main className="flex w-full flex-col gap-6 overflow-y-auto p-4">
@@ -84,7 +90,23 @@ function RouteComponent() {
             Applications you have signed in to with your account.
           </p>
         </div>
-        <ApplicationCards applications={applications} />
+        <ApplicationCards
+          applications={used}
+          emptyMessage="You haven't signed in to any applications yet."
+        />
+      </section>
+      <Separator />
+      <section className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg">Explore</h2>
+          <p className="text-sm text-muted-foreground">
+            Applications you can use but haven't signed in to yet.
+          </p>
+        </div>
+        <ApplicationCards
+          applications={available}
+          emptyMessage="There are no other applications available."
+        />
       </section>
     </main>
   )
